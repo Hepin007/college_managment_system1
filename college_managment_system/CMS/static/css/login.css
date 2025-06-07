@@ -76,92 +76,55 @@ body {
 
 /* --- Radio Button --- */
 
-/* .radio-group {
-    display: flex;
-    flex-direction:row;
-    gap: 14px;
-    margin-bottom: 15px;
-} */
-
-/* .radio-option input[type="radio"] {
-  display: none;
-} */
-
-
-/* .radio-option {
-  cursor: pointer;
-  padding: 7px 10px;
-  margin : 15px;
-  border-radius: 11px;
-  border : 1px solid #333;
-  background-color: transparent;
-  font-size: 16px;
-  user-select:none;
-  transition: background-color 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  position: relative;
-} */
-
-/* .radio-option:hover {
-  background-color: #4a9bf2;
-} */
-
-
-
-/* .radio-option input[type="radio"]:checked + span {
-  border-radius: 10px;
-  border : 3px solid #333;
-  background-color: #007bff;
-  padding : 7px 1px;
-  color: white;
-} */
-
-
 .radio-group {
-    display: flex;
-    gap: 14px;
-    margin: 15px 0 20px 0;
+  display: flex;
+  flex-direction: row;
+  gap: 14px;
+  margin-bottom: 15px;
 }
 
 .radio-option {
-    /* position: relative; */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 20px;
-    border: 2px solid #007bff;
-    border-radius: 10px;
-    background-color: transparent;
-    color: #007bff;
-    font-weight: 500;
-    cursor: pointer;
-    transition: 0.3s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 110px;
+  height: 45px;
+  border: 2px solid #007bff;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #007bff;
+  cursor: pointer;
+  background-color: white;
+  transition: all 0.3s ease;
 }
 
 .radio-option:hover {
-    background-color:#e6f0ff;
+  background-color: rgba(0, 123, 255, 0.1); /* Light blue on hover */
 }
 
+/* Hide the radio input */
 .radio-option input[type="radio"] {
-    display: none;
+  display: none;
 }
 
-/* .radio-option input[type="radio"]:checked ~ span {
-    background-color: #007bff;
-    color: white;
-    padding: 6px 18px;
-    border-radius: 8px;
-} */
-
-.radio-option input[type="radio"] {
-    display: none;
+/* Selected style (input checked) */
+.radio-option input[type="radio"]:checked + span {
+  background-color: #003366; /* Dark blue */
+  color: white;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.radio-option span {
-    pointer-events: none;
-}
+
+
+
+
 
 
 /* --- Home Page Styles --- */

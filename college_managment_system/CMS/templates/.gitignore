@@ -1,7 +1,17 @@
+# Python cache files
 __pycache__/
 *.py[cod]
-*.sqlite3
-*.log
+
+# Environment files
 *.env
-*.DS_Store
+
+# SQLite database files (if using sqlite)
+*.sqlite3
 *.db
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
