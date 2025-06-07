@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Student</title>
+  <link rel="stylesheet" href="{% static 'css/hod_manage.css' %}">
+  <link rel="stylesheet" href="{% static 'css/hod_sidebar.css' %}">
+</head>
+<body>
+<div class="manage-container">
+  {% include 'hod_sidebar.html' %}
+    <div class="main-content">
+  <h1>Add New Student</h1>
+
+  <form method="post">
+  {% csrf_token %}
+
+        {% for field in user_form %}
+            <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <div class="error">{{ field.errors }}</div>
+            {% endif %}
+            </div>
+        {% endfor %}
+
+        {% for field in student_form %}
+            <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <div class="error">{{ field.errors }}</div>
+            {% endif %}
+            </div>
+        {% endfor %}
+
+
+  <button type="submit">Add Student</button>
+</form>
+
+  {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  </div>
+</div>
+</body>
+</html>

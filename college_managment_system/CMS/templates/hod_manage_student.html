@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Students</title>
+  <link rel="stylesheet" href="{% static 'css/hod_manage.css' %}">
+  <link rel="stylesheet" href="{% static 'css/hod_sidebar.css' %}">
+</head>
+<body>
+  <div class="dashboard-container">
+  {% include 'hod_sidebar.html' %}
+
+  <div class="main-content">
+  <h1>Manage Students</h1>
+
+<form method="get" action="">
+<input type="text" name="roll_number" placeholder="Search by Roll Number" value="{{ roll_query }}"><br>
+<input type="text" name="year" placeholder="Search by Year" value="{{ year_query }}">
+<button type="submit">Search</button>
+  {% if roll_query or year_query %}
+  <p>Showing results{% if roll_query %} for Roll No "<strong>{{ roll_query }}</strong>"{% endif %}{% if roll_query and year_query %} and{% endif %}{% if year_query %} Year "<strong>{{ year_query }}</strong>"{% endif %}</p>
+  {% endif %}<br>
+</form>
+
+  <br>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Roll No</th>
+        <th>Name</th>
+        <th>Gender</th>
+        <th>Year</th>
+        <th>Contact</th>
+        <th>Session</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for student in students %}
+        <tr>
+          <td>{{ student.roll_number }}</td>
+          <td>{{ student.user.username }}</td>
+          <td>{{ student.gender }}</td>
+          <td>{{ student.year }}</td>
+          <td>{{ student.contact_number }}</td>
+          <td>{{ student.session_start }} to {{ student.session_end }}</td>
+          <td>
+            <a href="{% url 'delete_student' student.id %}" class="btn delete" onclick="return confirm('Are you sure you want to delete this student?');">Delete</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="7">No students found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <br>
+
+
+  </div>
+</div>
+</body>
+</html>

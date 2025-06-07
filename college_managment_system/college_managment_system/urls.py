@@ -28,6 +28,7 @@ urlpatterns = [
     
     # Student Management
     path('hod/manage-student/', views.manage_student, name='manage_student'),
+    path("hod/manage_student/add", views.add_student, name="add_student"),
     path('hod/manage-student/delete/<int:student_id>/', views.delete_student, name='delete_student'),
     
     # Faculty Management

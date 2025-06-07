@@ -54,11 +54,59 @@ def hod_dashboard(request):
         "subject_count": subject_count
     })
 
+from django.db.models import Q
+
 @login_required
 def manage_student(request):
     hod_department = request.user.hod.department
-    students = Student.objects.all().filter(department=hod_department)
-    return render(request, "manage_student.html", {"students": students})
+
+    roll_query = request.GET.get('roll_number', '').strip()
+    year_query = request.GET.get('year', '').strip()
+
+    students = Student.objects.filter(department=hod_department)
+
+    if roll_query:
+        students = students.filter(roll_number__icontains=roll_query)
+    if year_query:
+        students = students.filter(year=year_query)
+
+    return render(request, "hod_manage_student.html", {
+        "students": students,
+        "roll_query": roll_query,
+        "year_query": year_query
+    })
+
+
+
+@login_required
+def add_student(request):
+    if request.method == 'POST':
+        user_form = CustomUserForm(request.POST)
+        student_form = StudentForm(request.POST)
+
+        if user_form.is_valid() and student_form.is_valid():
+            user = user_form.save(commit=False)
+            user.user_type = 'student'
+            user.role = 'student'
+            user.save()
+
+            student = student_form.save(commit=False)
+            student.user = user
+            student.department = request.user.hod.department
+            student.save()
+
+            messages.success(request, "Student added successfully.")
+            return redirect('add_student')
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        user_form = CustomUserForm()
+        student_form = StudentForm()
+
+    return render(request, 'hod_add_student.html', {
+        'user_form': user_form,
+        'student_form': student_form
+    })
 
 @login_required
 def delete_student(request, student_id):

@@ -44,15 +44,23 @@ class Faculty(models.Model):
 
 # Student Model
 class Student(models.Model):
+    GENDER_CHOICES = (
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+        ('Other', 'Other'),
+    )
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     roll_number = models.CharField(max_length=20, unique=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     year = models.IntegerField()
     contact_number = models.CharField(max_length=15)
-    gender = models.CharField(max_length=10) 
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES) 
     address = models.TextField()            
     session_start = models.DateField()      
     session_end = models.DateField()  
+
+    class Meta:
+        unique_together = ('roll_number', 'year')
 
     def __str__(self):
         return f"Student: {self.user.username}"

@@ -23,14 +23,27 @@ class LoginForm(forms.Form):
 class CustomUserForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'password1', 'password2', 'user_type']
+        fields = ['username', 'email', 'password1', 'password2']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+        }
 
 
 # --------- Student Form ---------
 class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
-        fields = ['user', 'department', 'gender', 'address', 'session_start', 'session_end']
+        fields = [
+            'roll_number', 'year', 'contact_number',
+            'gender', 'address', 'session_start', 'session_end'
+        ]
+        widgets = {
+            'session_start': forms.DateInput(attrs={'type': 'date'}),
+            'session_end': forms.DateInput(attrs={'type': 'date'}),
+            'gender': forms.Select(attrs={'class': 'form-control'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
 
 # --------- Faculty Form ---------
 class FacultyForm(forms.ModelForm):

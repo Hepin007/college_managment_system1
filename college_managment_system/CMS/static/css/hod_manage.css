@@ -1,0 +1,125 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f9;
+}
+
+.manage-container {
+    display: flex;
+    height: 100vh;
+    
+}
+
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+input[type="text"] {
+  padding: 8px;
+  width: 250px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+button, .btn {
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.btn.edit {
+  background-color: #28a745;
+}
+
+.btn.delete {
+  background-color: #dc3545;
+}
+
+.btn.add {
+  background-color: #17a2b8;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+table th, table td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+form {
+  max-width: 600px;
+  margin-top: 20px;
+}
+
+form p {
+  margin-bottom: 15px;
+}
+
+form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+form input[type="text"],
+form input[type="number"],
+form input[type="date"],
+form input[type="email"],
+form input[type="password"],
+form select,
+form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+form textarea {
+  resize: vertical;
+}
+
+form button[type="submit"],
+form .btn {
+  padding: 10px 16px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+form .btn {
+  background-color: #6c757d;
+}
+
+form button:hover,
+form .btn:hover {
+  background-color: #0056b3;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
