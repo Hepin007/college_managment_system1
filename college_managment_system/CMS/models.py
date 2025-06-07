@@ -95,8 +95,9 @@ class Subject(models.Model):
     name = models.CharField(max_length=100)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     faculty = models.ForeignKey(Faculty, on_delete=models.SET_NULL, null=True)
-    semester = models.CharField(max_length=10)
-
+    # semester = models.CharField(max_length=10)
+    semester = models.IntegerField()
+    
     def __str__(self):
         return self.name
 
@@ -111,24 +112,6 @@ class Timetable(models.Model):
     def __str__(self):
         return f"{self.subject.name} - {self.day} - {self.time}"
 
-# # faculty
-# class Faculty(models.Model):
-#     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-#     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)
-#     address = models.TextField()
-
-#     def __str__(self):
-#         return self.user.username
-
-# # student
-# class Student(models.Model):
-#     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-#     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)
-#     gender = models.CharField(max_length=10)
-#     address = models.TextField()
-
-#     def __str__(self):
-#         return self.user.username
 
 # attendance
 class Attendance(models.Model):
@@ -144,6 +127,16 @@ class AttendanceReport(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     attendance = models.ForeignKey(Attendance, on_delete=models.CASCADE)
     status = models.BooleanField(default="pending", choices=STATUS_CHOICES)
+
+# class AttendanceReport(models.Model):
+#     STATUS_CHOICES = (
+#         (True, 'Present'),
+#         (False, 'Absent'),
+#     )
+#     student = models.ForeignKey(Student, on_delete=models.CASCADE)
+#     attendance = models.ForeignKey(Attendance, on_delete=models.CASCADE)
+#     status = models.BooleanField(choices=STATUS_CHOICES, default=True)
+
 
 # result
 class StudentResult(models.Model):

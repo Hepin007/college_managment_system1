@@ -168,30 +168,77 @@ def delete_faculty(request, faculty_id):
     return redirect("manage_faculty")
 
 
+# @login_required
+# def manage_attendance(request):
+#     filter_form = AttendanceFilterForm(request.POST or None)
+#     students = []
+#     subject = None
+
+#     if request.method == 'POST' and filter_form.is_valid():
+#         semester = filter_form.cleaned_data['semester']
+#         subject = filter_form.cleaned_data['subject']
+
+#         # Filter students who are in that semester and have that subject
+#         students = Student.objects.filter(
+#             semester=semester , subjects=subject
+#         )
+
+#         if not students:
+#             messages.info(request, "No students found for selected semester and subject.")
+        
+#     return render(request, "hod_manage_attendance.html", {
+#         'filter_form': filter_form,
+#         'students': students,
+#         'subject': subject,
+#     })  
+
+from django.utils import timezone
+
 @login_required
 def manage_attendance(request):
     filter_form = AttendanceFilterForm(request.POST or None)
-
     students = []
     subject = None
 
-    if request.method == 'POST' and filter_form.is_valid():
-        semester = filter_form.cleaned_data['semester']
-        subject = filter_form.cleaned_data['subject']
+    if request.method == 'POST':
+        if 'load_students' in request.POST and filter_form.is_valid():
+            semester = filter_form.cleaned_data['semester']
+            subject = filter_form.cleaned_data['subject']
+            students = Student.objects.filter(semester=semester)
 
-        # Filter students who are in that semester and have that subject
-        students = Student.objects.filter(
-            semester=semester
-        )
+        elif 'submit_attendance' in request.POST:
+            subject_id = request.POST.get('subject')
+            semester = request.POST.get('semester')
+            subject = Subject.objects.get(id=subject_id)
+            students = Student.objects.filter(semester=semester)
 
-        if not students:
-            messages.info(request, "No students found for selected semester and subject.")
+            attendance_obj, _ = Attendance.objects.get_or_create(
+                subject=subject,
+                faculty=request.user.faculty,
+                date=timezone.now().date()
+            )
 
-    return render(request, "hod_manage_attendance.html", {
+            for student in students:
+                status_key = f'student_{student.id}'  # fix this key name
+                status_val = request.POST.get(status_key)
+                status = True if status_val == 'present' else False
+
+                AttendanceReport.objects.update_or_create(
+                    student=student,
+                    attendance=attendance_obj,
+                    defaults={'status': status}
+                )
+
+            messages.success(request, "Attendance submitted successfully.")
+            return redirect('manage_attendance')
+
+    return render(request, 'hod_manage_attendance.html', {
         'filter_form': filter_form,
         'students': students,
-        'subject': subject,
+        'subject': subject
     })
+
+
 
 
 @login_required

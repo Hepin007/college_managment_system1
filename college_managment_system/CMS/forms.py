@@ -74,32 +74,34 @@ class AttendanceFilterForm(forms.Form):
         semester = kwargs.pop('semester', None)
         super().__init__(*args, **kwargs)
         if semester:
-            self.fields['subject'].queryset = Subject.objects.filter(semester=semester)
-
-class AttendanceSubmissionForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        students = kwargs.pop('students', [])
-        super().__init__(*args, **kwargs)
-        for student in students:
-            self.fields[f'student_{student.id}'] = forms.ChoiceField(
-                label=student.user.username,
-                choices=[('present', 'Present'), ('absent', 'Absent')],
-                widget=forms.RadioSelect
-            )
+            self.fields['subject'].queryset = Subject.objects.filter(semester=semester)  
 
 
-class StudentAttendanceForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        students = kwargs.pop('students')
-        super(StudentAttendanceForm, self).__init__(*args, **kwargs)
+# class AttendanceSubmissionForm(forms.Form):
+#     def __init__(self, *args, **kwargs):
+#         students = kwargs.pop('students', [])
+#         super().__init__(*args, **kwargs)
+#         for student in students:
+#             self.fields[f'student_{student.id}'] = forms.ChoiceField(
+#                 label=student.user.username,
+#                 choices=[('present', 'Present'), ('absent', 'Absent')],
+#                 widget=forms.RadioSelect
+#             )
+
+
+# class StudentAttendanceForm(forms.Form):
+#     def __init__(self, *args, **kwargs):
+#         students = kwargs.pop('students')
+#         super(StudentAttendanceForm, self).__init__(*args, **kwargs)
         
-        for student in students:
-            self.fields[f'student_{student.id}'] = forms.ChoiceField(
-                label=student.user.username,
-                choices=[('present', 'Present'), ('absent', 'Absent')],
-                widget=forms.RadioSelect,
-                initial='Pending'
-            )
+#         for student in students:
+#             self.fields[f'student_{student.id}'] = forms.ChoiceField(
+#                 label=student.user.username,
+#                 choices=[('present', 'Present'), ('absent', 'Absent')],
+#                 widget=forms.RadioSelect,
+#                 initial='Pending'
+#             )
+
 
 # --------- Timetable Form ---------
 class TimetableForm(forms.ModelForm):
@@ -153,3 +155,6 @@ class FeeForm(forms.ModelForm):
     class Meta:
         model = Fee
         fields = ['student', 'semester', 'amount', 'status']
+
+
+

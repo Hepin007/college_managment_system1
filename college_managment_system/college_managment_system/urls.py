@@ -38,7 +38,8 @@ urlpatterns = [
     
     # Attendance
     path('hod/manage-attendance/', views.manage_attendance, name='manage_attendance'),
-    path('hod/view-attendance/', views.view_attendance, name='view_attendance'),
+    # path('hod/view-attendance/', views.view_attendance, name='view_attendance'),
+    path('hod/view-attendance/<int:subject_id>/', views.view_attendance, name='view_attendance'),
     path('hod/toggle-attendance/<int:report_id>/', views.toggle_attendance, name='toggle_attendance'),
     
     # Results
