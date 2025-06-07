@@ -33,6 +33,7 @@ urlpatterns = [
     
     # Faculty Management
     path('hod/manage-faculty/', views.manage_faculty, name='manage_faculty'),
+    path("hod/manage_faculty/add", views.add_faculty, name="add_faculty"),
     path('hod/manage-faculty/delete/<int:faculty_id>/', views.delete_faculty, name='delete_faculty'),
     
     # Attendance

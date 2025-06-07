@@ -49,7 +49,12 @@ class StudentForm(forms.ModelForm):
 class FacultyForm(forms.ModelForm):
     class Meta:
         model = Faculty
-        fields = ['user', 'department', 'gender', 'address']
+        fields = ['department', 'gender', 'address', 'contact_number', 'DOJ']
+        widgets = {
+            'gender': forms.Select(attrs={'class': 'form-control'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'DOJ': forms.DateInput(attrs={'type': 'date','required': True}),
+        }
 
 # --------- Timetable Form ---------
 class TimetableForm(forms.ModelForm):

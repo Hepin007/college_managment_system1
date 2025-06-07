@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -33,11 +34,24 @@ class HOD(models.Model):
 
 # Faculty Model
 class Faculty(models.Model):
+    GENDER_CHOICES = (
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+        ('Other', 'Other'),
+    )
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
-    contact_number = models.CharField(max_length=15)
-    gender = models.CharField(max_length=10) 
-    address = models.TextField()  
+    contact_number = models.CharField(max_length=15,unique=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES) 
+    address = models.TextField()
+    DOJ = models.DateField() 
+    
+    @property
+    def experience(self):
+        if self.DOJ:
+            today = date.today()
+            return today.year - self.DOJ.year - ((today.month, today.day) < (self.DOJ.month, self.DOJ.day))
+        return 0
 
     def __str__(self):
         return f"Faculty: {self.user.username}"
@@ -53,7 +67,7 @@ class Student(models.Model):
     roll_number = models.CharField(max_length=20, unique=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     year = models.IntegerField()
-    contact_number = models.CharField(max_length=15)
+    contact_number = models.CharField(max_length=15,unique=True)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES) 
     address = models.TextField()            
     session_start = models.DateField()      

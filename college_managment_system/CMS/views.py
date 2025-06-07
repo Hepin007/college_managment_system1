@@ -76,8 +76,6 @@ def manage_student(request):
         "year_query": year_query
     })
 
-
-
 @login_required
 def add_student(request):
     if request.method == 'POST':
@@ -117,8 +115,50 @@ def delete_student(request, student_id):
 
 @login_required
 def manage_faculty(request):
-    faculties = Faculty.objects.all()
-    return render(request, "manage_faculty.html", {"faculties": faculties})
+    hod_department = request.user.hod.department
+
+    username = request.GET.get('username', '').strip()
+
+    faculties = Faculty.objects.filter(department=hod_department)
+
+    if username:
+        faculties = faculties.filter(username__icontains=username)
+
+    return render(request, "hod_manage_faculty.html", {
+        "faculties": faculties,
+        "username": username,
+    })
+
+
+@login_required
+def add_faculty(request):
+    if request.method == 'POST':
+        user_form = CustomUserForm(request.POST)
+        faculty_form = FacultyForm(request.POST)
+
+        if user_form.is_valid() and faculty_form.is_valid():
+            user = user_form.save(commit=False)
+            user.user_type = 'faculty'
+            user.role = 'faculty'
+            user.save()
+
+            faculty = faculty_form.save(commit=False)
+            faculty.user = user
+            faculty.department = request.user.hod.department
+            faculty.save()
+
+            messages.success(request, "Faculty added successfully.")
+            return redirect('add_faculty')
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        user_form = CustomUserForm()
+        faculty_form = FacultyForm()
+
+    return render(request, 'hod_add_faculty.html', {
+        'user_form': user_form,
+        'faculty_form': faculty_form
+    })
 
 @login_required
 def delete_faculty(request, faculty_id):
