@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import (
-    CustomUser, Student, Faculty, Timetable, Assignment, Submission,
+    CustomUser, Student, Faculty, Subject, Timetable, Assignment, Submission,
     LeaveRequest, Feedback, Attendance, AttendanceReport,
     StudentResult, Fee
 )
@@ -35,13 +35,14 @@ class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
         fields = [
-            'roll_number', 'year', 'contact_number',
+            'roll_number', 'year','semester', 'contact_number',
             'gender', 'address', 'session_start', 'session_end'
         ]
         widgets = {
             'session_start': forms.DateInput(attrs={'type': 'date'}),
             'session_end': forms.DateInput(attrs={'type': 'date'}),
             'gender': forms.Select(attrs={'class': 'form-control'}),
+            'roll_number': forms.Select(attrs={'class': 'form-control'}),
             'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
 
@@ -55,6 +56,50 @@ class FacultyForm(forms.ModelForm):
             'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'DOJ': forms.DateInput(attrs={'type': 'date','required': True}),
         }
+
+# --------- Attendace Form ---------
+class AttendanceFilterForm(forms.Form):
+    semester = forms.ChoiceField(
+        choices=[(str(i), f"Semester {i}") for i in range(1, 9)],
+        required=True,
+        label="Select Semester"
+    )
+    subject = forms.ModelChoiceField(
+        queryset=Subject.objects.none(),
+        required=False,
+        label="Select Subject"
+    )
+
+    def __init__(self, *args, **kwargs):
+        semester = kwargs.pop('semester', None)
+        super().__init__(*args, **kwargs)
+        if semester:
+            self.fields['subject'].queryset = Subject.objects.filter(semester=semester)
+
+class AttendanceSubmissionForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        students = kwargs.pop('students', [])
+        super().__init__(*args, **kwargs)
+        for student in students:
+            self.fields[f'student_{student.id}'] = forms.ChoiceField(
+                label=student.user.username,
+                choices=[('present', 'Present'), ('absent', 'Absent')],
+                widget=forms.RadioSelect
+            )
+
+
+class StudentAttendanceForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        students = kwargs.pop('students')
+        super(StudentAttendanceForm, self).__init__(*args, **kwargs)
+        
+        for student in students:
+            self.fields[f'student_{student.id}'] = forms.ChoiceField(
+                label=student.user.username,
+                choices=[('present', 'Present'), ('absent', 'Absent')],
+                widget=forms.RadioSelect,
+                initial='Pending'
+            )
 
 # --------- Timetable Form ---------
 class TimetableForm(forms.ModelForm):

@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Attendance</title>
+  <link rel="stylesheet" href="{% static 'css/hod_manage.css' %}">
+  <link rel="stylesheet" href="{% static 'css/hod_sidebar.css' %}">
+  <style>
+    .status-button {
+      padding: 6px 12px;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .present-btn {
+      background-color: #28a745; /* Green */
+    }
+    .absent-btn {
+      background-color: #dc3545; /* Red */
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="attendance-container">
+  {% include 'hod_sidebar.html' %}
+
+  <div class="main-content">
+    <h1>Manage Student Attendance</h1>
+
+    <!-- Semester Selection Form -->
+<form method="post">
+  {% csrf_token %}
+  <fieldset>
+    <legend>Step 1: Select Semester and Subject</legend>
+    {{ filter_form.semester.label_tag }} {{ filter_form.semester }}
+    <br><br>
+    {% if filter_form.fields.subject.queryset.exists %}
+      {{ filter_form.subject.label_tag }} {{ filter_form.subject }}
+      <br><br>
+      <button type="submit">Load Students</button>
+    {% else %}
+      <button type="submit">Next</button>
+    {% endif %}
+  </fieldset>
+
+  {% if students %}
+    <fieldset>
+      <legend>Step 2: Mark Attendance</legend>
+      <table>
+        <thead>
+          <tr>
+            <th>Roll No</th>
+            <th>Name</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for student in students %}
+          <tr>
+            <td>{{ student.roll_number }}</td>
+            <td>{{ student.user.username }}</td>
+            <td>
+              <label>
+                <input type="radio" name="student_{{ student.id }}" value="present" required>
+                <span style="color:green;">Present</span>
+              </label>
+              <label>
+                <input type="radio" name="student_{{ student.id }}" value="absent">
+                <span style="color:red;">Absent</span>
+              </label>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      <button type="submit">Submit Attendance</button>
+    </fieldset>
+  {% endif %}
+</form>
+
+  </div>
+</div>
+</body>
+</html>

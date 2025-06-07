@@ -63,10 +63,21 @@ class Student(models.Model):
         ('Female', 'Female'),
         ('Other', 'Other'),
     )
+    SEMESTER_CHOICES = (
+        ('Semester 1', 'Semester 1'),
+        ('Semester 2', 'Semester 2'),
+        ('Semester 3', 'Semester 3'),
+        ('Semester 4', 'Semester 4'),
+        ('Semester 5', 'Semester 5'),
+        ('Semester 6', 'Semester 6'),
+        ('Semester 7', 'Semester 7'),
+        ('Semester 8', 'Semester 8'),
+    )
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     roll_number = models.CharField(max_length=20, unique=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     year = models.IntegerField()
+    semester = models.CharField(max_length=10)
     contact_number = models.CharField(max_length=15,unique=True)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES) 
     address = models.TextField()            
@@ -84,6 +95,7 @@ class Subject(models.Model):
     name = models.CharField(max_length=100)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     faculty = models.ForeignKey(Faculty, on_delete=models.SET_NULL, null=True)
+    semester = models.CharField(max_length=10)
 
     def __str__(self):
         return self.name
@@ -125,9 +137,13 @@ class Attendance(models.Model):
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE)
 
 class AttendanceReport(models.Model):
+    STATUS_CHOICES = (
+        ('Present', 'Present'),
+        ('Absent', 'Absent'),
+    )
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     attendance = models.ForeignKey(Attendance, on_delete=models.CASCADE)
-    status = models.BooleanField(default=False)  # True = Present, False = Absent
+    status = models.BooleanField(default="pending", choices=STATUS_CHOICES)
 
 # result
 class StudentResult(models.Model):

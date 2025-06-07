@@ -167,10 +167,32 @@ def delete_faculty(request, faculty_id):
     faculty.delete()
     return redirect("manage_faculty")
 
+
 @login_required
 def manage_attendance(request):
-    subjects = Subject.objects.all()
-    return render(request, "manage_attendance.html", {"subjects": subjects})
+    filter_form = AttendanceFilterForm(request.POST or None)
+
+    students = []
+    subject = None
+
+    if request.method == 'POST' and filter_form.is_valid():
+        semester = filter_form.cleaned_data['semester']
+        subject = filter_form.cleaned_data['subject']
+
+        # Filter students who are in that semester and have that subject
+        students = Student.objects.filter(
+            semester=semester
+        )
+
+        if not students:
+            messages.info(request, "No students found for selected semester and subject.")
+
+    return render(request, "hod_manage_attendance.html", {
+        'filter_form': filter_form,
+        'students': students,
+        'subject': subject,
+    })
+
 
 @login_required
 def view_attendance(request, subject_id):
