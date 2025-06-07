@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.username.label_tag }} {{ form.username }} <br><br>
+        {{ form.password.label_tag }} {{ form.password }} <br><br>
+        <p>Select Role:</p>
+        {{ form.role }} <br><br>
+        <button type="submit">Login</button>
+    </form>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p style="color: red;">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>

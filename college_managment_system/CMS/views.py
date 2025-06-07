@@ -4,6 +4,40 @@ from django.contrib import messages
 from .models import *
 from datetime import date
 from django.http import HttpResponseRedirect
+from .forms import *
+from django.contrib.auth import authenticate, login
+
+def home_view(request):
+    return render(request, 'home.html')
+
+def login_view(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            role = form.cleaned_data['role']
+            
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                if user.role == role:
+                    login(request, user)
+                    if role == 'student':
+                        return redirect('student_dashboard')
+                    elif role == 'faculty':
+                        return redirect('faculty_dashboard')
+                    elif role == 'hod':
+                        return redirect('hod_dashboard')
+                else:
+                    messages.error(request, 'Incorrect role selected.')
+            else:
+                messages.error(request, 'Invalid username or password.')
+    else:
+        form = LoginForm()
+
+    return render(request, 'login.html', {'form': form})
+
+
 
 # ---------------- HOD VIEWS ----------------
 
@@ -20,7 +54,8 @@ def hod_dashboard(request):
 
 @login_required
 def manage_student(request):
-    students = Student.objects.all()
+    hod_department = request.user.hod.department
+    students = Student.objects.all().filter(department=hod_department)
     return render(request, "manage_student.html", {"students": students})
 
 @login_required

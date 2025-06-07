@@ -6,6 +6,19 @@ from .models import (
     StudentResult, Fee
 )
 
+from django import forms
+
+class LoginForm(forms.Form):
+    username = forms.CharField(label='Username')
+    password = forms.CharField(widget=forms.PasswordInput)
+    ROLE_CHOICES = [
+        ('student', 'Student'),
+        ('faculty', 'Faculty'),
+        ('hod', 'HOD'),
+    ]
+    role = forms.ChoiceField(choices=ROLE_CHOICES, widget=forms.RadioSelect)
+
+
 # --------- User Creation Forms ---------
 class CustomUserForm(UserCreationForm):
     class Meta:
