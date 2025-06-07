@@ -91,6 +91,9 @@ urlpatterns = [
     # Leave
     path('student/leave/', views.apply_leave, name='student_leave'),
 
+    # ========== COMMON ==========
+    path('logout/', views.logout_view, name='logout'),
+
 
 ]
 

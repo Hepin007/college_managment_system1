@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from huggingface_hub import logout
 from .models import *
 from datetime import date
 from django.http import HttpResponseRedirect
@@ -43,9 +44,10 @@ def login_view(request):
 
 @login_required
 def hod_dashboard(request):
-    student_count = Student.objects.count()
-    faculty_count = Faculty.objects.count()
-    subject_count = Subject.objects.count()
+    hod_depaetment = request.user.hod.department
+    student_count = Student.objects.filter(department=hod_depaetment).count()
+    faculty_count = Faculty.objects.filter(department=hod_depaetment).count()
+    subject_count = Subject.objects.filter(department=hod_depaetment).count()
     return render(request, "hod_dashboard.html", {
         "student_count": student_count,
         "faculty_count": faculty_count,
@@ -276,3 +278,9 @@ def apply_leave(request):
         LeaveRequest.objects.create(user=request.user, user_type='Student', reason=reason)
         return redirect("apply_leave")
     return render(request, "student_leave.html", {"leaves": leaves})
+
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('home')

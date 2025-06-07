@@ -1,0 +1,177 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: blue;
+    color: #333;
+    min-height: 100vh;
+}
+
+/* --- Login Page Styles --- */
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to bottom right, #007bff, white);
+}
+
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.login-box h2 {
+    margin-bottom: 25px;
+    text-align: center;
+    color: #333;
+}
+
+.login-box label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.login-box input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.login-box button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.login-box button:hover {
+    background: linear-gradient(to bottom right, #007bff, white);
+}
+
+
+/* --- Redio Button --- */
+
+.radio-group {
+    display: flex;
+    flex-direction:row;
+    gap: 14px;
+    margin-bottom: 15px;
+}
+
+.radio-option input[type="radio"] {
+  display: none;
+}
+
+.radio-option {
+  cursor: pointer;
+  padding: 7px 10px;
+  margin : 15px;
+  border-radius: 11px;
+  border : 1px solid #333;
+  background-color: transparent;
+  font-size: 16px;
+  user-select:none;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.radio-option:hover {
+  background-color: #4a9bf2;
+}
+
+
+
+.radio-option input[type="radio"]:checked + span {
+  border-radius: 10px;
+  border : 3px solid #333;
+  background-color: #007bff;
+  padding : 7px 1px;
+  color: white;
+}
+
+/* --- Home Page Styles --- */
+
+.home-header {
+    background-color: #007bff;
+    padding: 20px;
+    color: white;
+    text-align: center;
+    font-size: 26px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.home-content {
+    padding: 40px;
+    text-align: center;
+}
+
+.home-content h1 {
+    font-size: 32px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.home-content p {
+    font-size: 18px;
+    color: #666;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* --- Utility Buttons --- */
+.btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .home-content {
+        padding: 20px;
+    }
+
+    .login-box {
+        padding: 25px;
+    }
+}

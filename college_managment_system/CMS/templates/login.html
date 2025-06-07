@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
     <title>Login</title>
@@ -19,5 +19,49 @@
             <p style="color: red;">{{ message }}</p>
         {% endfor %}
     {% endif %}
+</body>
+</html> -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Login</h2>
+            <form method="post">
+                {% csrf_token %}
+
+                <label for="{{ form.role.id_for_label }}">Select Role</label>
+                <div class="radio-group">
+                    {% for radio in form.role %}
+                        <label class="radio-option">
+                            {{ radio.tag }}<span>{{ radio.choice_label }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
+                
+                <label for="{{ form.username.id_for_label }}">Username</label>
+                {{ form.username }}
+
+                <label for="{{ form.password.id_for_label }}">Password</label>
+                {{ form.password }}
+
+                
+
+                <button type="submit">Login</button>
+            </form>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <p style="color: red; margin-top: 10px;">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
 </body>
 </html>
