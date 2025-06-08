@@ -196,30 +196,39 @@ from django.utils import timezone
 
 @login_required
 def manage_attendance(request):
-    filter_form = AttendanceFilterForm(request.POST or None)
     students = []
     subject = None
+    semester = None
 
     if request.method == 'POST':
+        semester = request.POST.get('semester')
+        filter_form = AttendanceFilterForm(request.POST, semester=semester)
+
         if 'load_students' in request.POST and filter_form.is_valid():
-            semester = filter_form.cleaned_data['semester']
             subject = filter_form.cleaned_data['subject']
             students = Student.objects.filter(semester=semester)
 
         elif 'submit_attendance' in request.POST:
-            subject_id = request.POST.get('subject')
+            subject_id = request.POST.get("subject")
+            if subject_id:
+                subject = Subject.objects.get(id=subject_id)
+            else:
+                # Handle error: maybe redirect back with message
+                messages.error(request, "Subject not selected.")
+                return redirect('manage_attendance')
+
             semester = request.POST.get('semester')
             subject = Subject.objects.get(id=subject_id)
             students = Student.objects.filter(semester=semester)
 
             attendance_obj, _ = Attendance.objects.get_or_create(
                 subject=subject,
-                faculty=request.user.faculty,
+                faculty=subject.faculty,
                 date=timezone.now().date()
             )
 
             for student in students:
-                status_key = f'student_{student.id}'  # fix this key name
+                status_key = f'student_{student.id}'
                 status_val = request.POST.get(status_key)
                 status = True if status_val == 'present' else False
 
@@ -231,12 +240,15 @@ def manage_attendance(request):
 
             messages.success(request, "Attendance submitted successfully.")
             return redirect('manage_attendance')
+    else:
+        filter_form = AttendanceFilterForm()
 
     return render(request, 'hod_manage_attendance.html', {
         'filter_form': filter_form,
         'students': students,
         'subject': subject
     })
+
 
 
 

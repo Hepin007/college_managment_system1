@@ -74,7 +74,9 @@ class AttendanceFilterForm(forms.Form):
         semester = kwargs.pop('semester', None)
         super().__init__(*args, **kwargs)
         if semester:
-            self.fields['subject'].queryset = Subject.objects.filter(semester=semester)  
+            self.fields['subject'].queryset = Subject.objects.filter(semester=int(semester))
+
+  
 
 
 # class AttendanceSubmissionForm(forms.Form):

@@ -1,4 +1,5 @@
-{% comment %} {% load static %}
+{% load static %}
+{% load form_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,166 +41,84 @@
 
   <div class="main-content">
     <h1>Manage Student Attendance</h1>
+{% if messages %}
+    <div class="alert alert-info">
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}  
+    </div>
+{% endif %}
 
     <!-- Semester Selection Form -->
-<form method="post">
+<form method="post" class="mb-4">
   {% csrf_token %}
-  <fieldset>
-    <legend>Step 1: Select Semester and Subject</legend>
-    {{ filter_form.semester.label_tag }} {{ filter_form.semester }}
-    <br><br>
-    {% if filter_form.fields.subject.queryset.exists %}
-      {{ filter_form.subject.label_tag }} {{ filter_form.subject }}
-      <br><br>
-      <button type="submit">Load Students</button>
-    {% else %}
-      <button type="submit">Next</button>
-    {% endif %}
+  <fieldset class="border p-3 mb-4">
+    <legend class="w-auto">Step 1: Select Semester</legend>
+    
+    <div class="row mb-3">
+      <div class="col-md-6">
+        {{ filter_form.semester.label_tag }}
+        {{ filter_form.semester|add_class:"form-select" }}
+      </div>
+      <div class="col-md-6">
+        {{ filter_form.subject.label_tag }}
+        {{ filter_form.subject|add_class:"form-select" }}
+      </div>
+    </div>
+
+    <button type="submit" name="load_students" class="btn btn-primary">Load Students</button>
   </fieldset>
 
   {% if students %}
-    <fieldset>
-      <legend>Step 2: Mark Attendance</legend>
-      <table>
-        <thead>
-          <tr>
-            <th>Roll No</th>
-            <th>Name</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
+  <fieldset class="border p-3">
+    <legend class="w-auto">Step 2: Mark Attendance</legend>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Roll No</th>
+          <th>Name</th>
+          <th>Subject</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
         {% for student in students %}
-          <tr>
-            <td>{{ student.roll_number }}</td>
-            <td>{{ student.user.username }}</td>
-            <td>
-              <label>
-                <input type="radio" name="student_{{ student.id }}" value="present" required>
-                <span style="color:green;">Present</span>
-              </label>
-              <label>
-                <input type="radio" name="student_{{ student.id }}" value="absent">
-                <span style="color:red;">Absent</span>
-              </label>
-            </td>
-          </tr>
+        <tr>
+          <td>{{ student.roll_number }}</td>
+          <td>{{ student.user.username }}</td>
+          <td>{{ subject.name }}</td>
+          <td>
+            {% with "student_"|add:student.id|stringformat:"s" as key %}
+              {% if request.POST.key == 'present' %}
+                Present
+              {% elif request.POST.key == 'absent' %}
+                Absent
+              {% else %}
+                Not Marked
+              {% endif %}
+            {% endwith %}
+          </td>
+          <td>
+            <label class="me-3">
+              <input type="radio" name="student_{{ student.id }}" value="present" required>
+              <span class="text-success">Present</span>
+            </label>
+            <label>
+              <input type="radio" name="student_{{ student.id }}" value="absent">
+              <span class="text-danger">Absent</span>
+            </label>
+          </td>
+        </tr>
         {% endfor %}
-        </tbody>
-      </table>
-      <button type="submit">Submit Attendance</button>
-    </fieldset>
+      </tbody>
+    </table>
+    <input type="hidden" name="semester" value="{{ filter_form.semester.value }}">
+    <input type="hidden" name="subject" value="{{ filter_form.subject.value }}">
+    <button type="submit" name="submit_attendance" class="btn btn-success mt-3">Submit Attendance</button>
+  </fieldset>
   {% endif %}
 </form>
-
-  </div>
-</div>
-</body>
-</html> {% endcomment %}  
-
-{% load static %}
-{% load form_filters %} 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Manage Attendance</title>
-  <link rel="stylesheet" href="{% static 'css/hod_manage.css' %}">
-  <link rel="stylesheet" href="{% static 'css/hod_sidebar.css' %}">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <style>
-    .status-button {
-      padding: 6px 12px;
-      border: none;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .present-btn {
-      background-color: #28a745;
-    }
-    .absent-btn {
-      background-color: #dc3545;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    table, th, td {
-      border: 1px solid #ccc;
-    }
-    th, td {
-      padding: 10px;
-      text-align: center;
-    }
-    .main-content {
-      padding: 20px;
-      flex: 1;
-    }
-  </style>
-</head>
-<body>
-<div class="attendance-container d-flex">
-  {% include 'hod_sidebar.html' %}
-
-  <div class="main-content">
-    <h1 class="mb-4">Manage Student Attendance</h1>
-
-    <form method="post" class="mb-4">
-      {% csrf_token %}
-      <fieldset class="border p-3 mb-4">
-        <legend class="w-auto">Step 1: Select Semester and Subject</legend>
-        
-        <div class="row mb-3">
-          <div class="col-md-6">
-            {{ filter_form.semester.label_tag }}
-            {{ filter_form.semester|add_class:"form-select" }}
-          </div>
-          <div class="col-md-6">
-            {{ filter_form.subject.label_tag }}
-            {{ filter_form.subject|add_class:"form-select" }}
-          </div>
-        </div>
-
-        <button type="submit" name="load_students" class="btn btn-primary">Load Students</button>
-      </fieldset>
-
-      {% if students %}
-      <fieldset class="border p-3">
-        <legend class="w-auto">Step 2: Mark Attendance</legend>
-        <table>
-          <thead>
-            <tr>
-              <th>Roll No</th>
-              <th>Name</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for student in students %}
-            <tr>
-              <td>{{ student.roll_number }}</td>
-              <td>{{ student.user.username }}</td>
-              <td>
-                <label class="me-3">
-                  <input type="radio" name="student_{{ student.id }}" value="present" required>
-                  <span style="color:green;">Present</span>
-                </label>
-                <label>
-                  <input type="radio" name="student_{{ student.id }}" value="absent">
-                  <span style="color:red;">Absent</span>
-                </label>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        <button type="submit" name="submit_attendance" class="btn btn-success mt-3">Submit Attendance</button>
-      </fieldset>
-      {% endif %}
-    </form>
   </div>
 </div>
 </body>

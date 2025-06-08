@@ -1,13 +1,18 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>College Management System</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
 </head>
 <body>
-    <h1>Welcome to the College Management System</h1>
-    <p>Please login to continue.</p>
-    <a href="{% url 'login' %}">
-        <button>Login</button>
-    </a>
+     <div class="home-header">
+        College Management System
+    </div>
+    <div class="home-content">
+        <h1>Welcome to the College Management System</h1>
+        <p>Please login to continue.</p><br><br><br>
+        <a href="{% url 'login' %}" class="btn">Login</a>
+    </div>
 </body>
 </html>
