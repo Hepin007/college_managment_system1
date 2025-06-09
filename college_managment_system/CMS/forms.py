@@ -125,6 +125,30 @@ class TimetableForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['department'].queryset = Department.objects.all()
 
+
+# class TimetableForm(forms.ModelForm):
+#     class Meta:
+#         model = Timetable
+#         fields = '__all__'
+
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.fields['subject'].queryset = Subject.objects.none()
+
+#         if 'department' in self.data and 'semester' in self.data:
+#             department_id = self.data.get('department')
+#             semester = self.data.get('semester')
+#             self.fields['subject'].queryset = Subject.objects.filter(
+#                 department_id=department_id,
+#                 semester=semester
+#             )
+#         elif self.instance.pk:
+#             self.fields['subject'].queryset = Subject.objects.filter(
+#                 department=self.instance.department,
+#                 semester=self.instance.semester
+#             )
+
+
 # --------- Assignment Upload Form ---------
 class AssignmentForm(forms.ModelForm):
     class Meta:

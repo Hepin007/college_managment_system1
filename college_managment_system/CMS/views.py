@@ -3,10 +3,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from huggingface_hub import logout
 from .models import *
+from .models import LeaveRequest 
 from datetime import date
 from django.http import HttpResponseRedirect
 from .forms import *
 from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
 
 def home_view(request):
     return render(request, 'home.html')
@@ -250,9 +252,6 @@ def manage_attendance(request):
     })
 
 
-
-
-
 @login_required
 def view_attendance(request, subject_id):
     attendance = Attendance.objects.filter(subject_id=subject_id)
@@ -312,6 +311,29 @@ def make_timetable(request):
         'timetables': timetables
     })
 
+# @login_required
+# def make_timetable(request):
+#     form = TimetableForm(request.POST or None)
+#     if request.method == 'POST' and form.is_valid():
+#         form.save()
+#         messages.success(request, "Timetable entry added.")
+#         return redirect('make_timetable')
+
+#     timetables = Timetable.objects.all()
+#     return render(request, 'hod_manage_timetable.html', {
+#         'form': form,
+#         'timetables': timetables
+#     })
+
+
+# @login_required
+# def load_subjects(request):
+#     department_id = request.GET.get('department_id')
+#     semester = request.GET.get('semester')
+#     subjects = Subject.objects.filter(department_id=department_id, semester=semester)
+#     data = [{'id': s.id, 'name': s.name} for s in subjects]
+#     return JsonResponse({'subjects': data})
+
 @login_required
 def delete_timetable(request, timetable_id):
     timetable = get_object_or_404(Timetable, id=timetable_id)
@@ -319,21 +341,7 @@ def delete_timetable(request, timetable_id):
     messages.success(request, "Timetable entry deleted.")
     return redirect('make_timetable')
 
-# @login_required
-# def view_leave(request):
-#     leaves = LeaveRequest.objects.all().order_by('-date')
-#     return render(request, "hod_review_leave.html", {"leaves": leaves})
 
-
-# @login_required
-# def approve_leave(request, leave_id, action):
-#     leave = get_object_or_404(LeaveRequest, id=leave_id)
-#     leave.status = 'Approved' if action == 'approve' else 'Rejected'
-#     leave.save()
-#     return redirect("view_leave")    
-
-
-from .models import LeaveRequest # Make sure these are correct
 
 @login_required
 def view_leave(request):

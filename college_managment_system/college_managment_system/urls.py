@@ -36,11 +36,11 @@ urlpatterns = [
     path("hod/manage_faculty/add", views.add_faculty, name="add_faculty"),
     path('hod/manage-faculty/delete/<int:faculty_id>/', views.delete_faculty, name='delete_faculty'),
     
-    # Attendance
-    path('hod/manage-attendance/', views.manage_attendance, name='manage_attendance'),
-    # path('hod/view-attendance/', views.view_attendance, name='view_attendance'),
-    path('hod/view-attendance/<int:subject_id>/', views.view_attendance, name='view_attendance'),
-    path('hod/toggle-attendance/<int:report_id>/', views.toggle_attendance, name='toggle_attendance'),
+    # Attendance  (NOT REQUIRED)
+    # path('hod/manage-attendance/', views.manage_attendance, name='manage_attendance'),
+    # # path('hod/view-attendance/', views.view_attendance, name='view_attendance'),
+    # path('hod/view-attendance/<int:subject_id>/', views.view_attendance, name='view_attendance'),
+    # path('hod/toggle-attendance/<int:report_id>/', views.toggle_attendance, name='toggle_attendance'),
     
     # Results
     path('hod/review-result/', views.review_result, name='review_result'),
@@ -48,12 +48,11 @@ urlpatterns = [
     # Timetable
     path('hod/make-timetable/', views.make_timetable, name='make_timetable'),
     path('hod/delete-timetable/<int:timetable_id>/', views.delete_timetable, name='delete_timetable'),
+    # path('ajax/load-subjects/', views.load_subjects, name='ajax_load_subjects'),
+
 
     # Leave Applications
-    # path('hod/view-leave/', views.view_leave, name='view_leave'),
-    # path('hod/approve-leave/<int:leave_id>/', views.approve_leave, name='approve_leave'),
-    
-     path("manage/leave/", views.view_leave, name="view_leave"),
+    path("manage/leave/", views.view_leave, name="view_leave"),
     path("manage/leave/student/<int:leave_id>/<str:action>/", views.approve_leave_student, name="approve_leave_student"),
     path("manage/leave/faculty/<int:leave_id>/<str:action>/", views.approve_leave_faculty, name="approve_leave_faculty"),
     
