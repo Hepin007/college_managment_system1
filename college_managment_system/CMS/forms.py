@@ -111,6 +111,7 @@ class ResultReviewForm(forms.ModelForm):
         model = StudentResult
         fields = ['status']
 
+
 # --------- Timetable Form ---------
 class TimetableForm(forms.ModelForm):
     class Meta:
@@ -185,10 +186,19 @@ class AttendanceReportForm(forms.ModelForm):
         fields = ['student', 'attendance', 'status']
 
 # --------- Grade Entry Form ---------
-class ResultForm(forms.ModelForm):
-    class Meta:
-        model = StudentResult
-        fields = ['student', 'subject', 'grade']
+class SemesterForm(forms.Form):
+    semester = forms.IntegerField(label="Select Semester", min_value=1, max_value=8)
+
+class GradeEntryForm(forms.Form):
+    student = forms.ModelChoiceField(queryset=Student.objects.none(), label="Student")
+    subject = forms.ModelChoiceField(queryset=Subject.objects.none(), label="Subject")
+    grade = forms.CharField(label="Grade", max_length=2)
+
+    def __init__(self, faculty=None, semester=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if faculty and semester:
+            self.fields['subject'].queryset = Subject.objects.filter(faculty=faculty, semester=semester)
+            self.fields['student'].queryset = Student.objects.filter(semester=semester)
 
 # --------- Fees Entry Form ---------
 class FeeForm(forms.ModelForm):

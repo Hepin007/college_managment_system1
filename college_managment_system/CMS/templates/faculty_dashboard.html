@@ -3,14 +3,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>HOD Dashboard</title>
+    <title>Faculty Dashboard</title>
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
 </head>
 <body>
     <div class="dashboard-container">
         
-        {% include 'hod_sidebar.html' %}
+        {% include 'faculty_sidebar.html' %}
 
         <div class="main-content">
             <div class="header">
@@ -19,14 +19,14 @@
 
 
             <div class="stats-grid">
-                <div class="stat-box">
+                <!-- <div class="stat-box">
                     <h2>Students</h2>
                     <p>{{ student_count }}</p>
                 </div>
                 <div class="stat-box">
                     <h2>Faculty</h2>
                     <p>{{ faculty_count }}</p>
-                </div>
+                </div> -->
                 <div class="stat-box">
                     <h2>Subjects</h2>
                     <p>{{ subject_count }}</p>
@@ -36,7 +36,7 @@
 
             <div class="content">
                 {% block content %}
-                <p>Select a section from the sidebar to manage your department.</p>
+                <p>Select a section from the sidebar to do work.</p>
                 {% endblock %}
             </div>
         </div>

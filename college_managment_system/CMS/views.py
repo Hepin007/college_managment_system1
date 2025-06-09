@@ -375,8 +375,8 @@ def approve_leave_faculty(request, leave_id, action):
 @login_required
 def faculty_dashboard(request):
     faculty = request.user.faculty
-    subjects = Subject.objects.filter(faculty=faculty)
-    return render(request, "faculty_dashboard.html", {"subjects": subjects})
+    subject_count = Subject.objects.filter(faculty=faculty).count()
+    return render(request, "faculty_dashboard.html", {"subject_count": subject_count})
 
 @login_required
 def mark_attendance(request, subject_id):
@@ -392,17 +392,42 @@ def mark_attendance(request, subject_id):
     return render(request, "faculty_mark_attendance.html", {"students": students, "subject": subject})
 
 @login_required
-def student_grade(request, subject_id):
-    students = Student.objects.filter(department=request.user.faculty.department)
-    subject = get_object_or_404(Subject, id=subject_id)
-    if request.method == "POST":
-        for student in students:
-            grade = request.POST.get(f'grade_{student.id}')
-            result, _ = StudentResult.objects.get_or_create(student=student, subject=subject)
-            result.grade = grade
-            result.save()
-        return redirect("faculty_dashboard")
-    return render(request, "faculty_student_grade.html", {"students": students, "subject": subject})
+
+def student_grade(request):
+    semester_form = SemesterForm(request.POST or None)
+    grade_form = None
+    semester = None
+
+    if request.method == 'POST':
+        if 'load' in request.POST and semester_form.is_valid():
+            semester = semester_form.cleaned_data['semester']
+            grade_form = GradeEntryForm(faculty=request.user.faculty, semester=semester)
+        elif 'submit_grade' in request.POST:
+            semester = int(request.POST.get('semester'))
+            grade_form = GradeEntryForm(faculty=request.user.faculty, semester=semester, data=request.POST)
+            if grade_form.is_valid():
+                student = grade_form.cleaned_data['student']
+                subject = grade_form.cleaned_data['subject']
+                grade = grade_form.cleaned_data['grade']
+                faculty = request.user.faculty
+
+                # Save result
+                StudentResult.objects.create(
+                    student=student,
+                    subject=subject,
+                    grade=grade,
+                    faculty=faculty,
+                    semester=semester
+                )
+                messages.success(request, "Grade submitted successfully.")
+                return redirect('student_grade')
+
+    context = {
+        'semester_form': semester_form,
+        'grade_form': grade_form,
+        'semester': semester
+    }
+    return render(request, 'faculty_student_grade.html', context)
 
 @login_required
 def student_assignment(request):
