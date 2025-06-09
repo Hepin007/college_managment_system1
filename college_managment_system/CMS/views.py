@@ -319,17 +319,47 @@ def delete_timetable(request, timetable_id):
     messages.success(request, "Timetable entry deleted.")
     return redirect('make_timetable')
 
-@login_required
-def view_leave(request):
-    leaves = LeaveRequest.objects.all().order_by('-date')
-    return render(request, "view_leave.html", {"leaves": leaves})
+# @login_required
+# def view_leave(request):
+#     leaves = LeaveRequest.objects.all().order_by('-date')
+#     return render(request, "hod_review_leave.html", {"leaves": leaves})
+
+
+# @login_required
+# def approve_leave(request, leave_id, action):
+#     leave = get_object_or_404(LeaveRequest, id=leave_id)
+#     leave.status = 'Approved' if action == 'approve' else 'Rejected'
+#     leave.save()
+#     return redirect("view_leave")    
+
+
+from .models import LeaveReportStudent, LeaveReportFaculty  # Make sure these are correct
 
 @login_required
-def approve_leave(request, leave_id, action):
-    leave = get_object_or_404(LeaveRequest, id=leave_id)
+def view_leave(request):
+    student_leaves = LeaveReportStudent.objects.all().order_by('-date')
+    faculty_leaves = LeaveReportFaculty.objects.all().order_by('-date')
+    return render(request, "hod_review_leave.html", {
+        "student_leaves": student_leaves,
+        "faculty_leaves": faculty_leaves
+    })
+
+@login_required
+def approve_leave_student(request, leave_id, action):
+    leave = get_object_or_404(LeaveReportStudent, id=leave_id)
     leave.status = 'Approved' if action == 'approve' else 'Rejected'
     leave.save()
-    return redirect("view_leave")   
+    return redirect("view_leave")
+
+@login_required
+def approve_leave_faculty(request, leave_id, action):
+    leave = get_object_or_404(LeaveReportFaculty, id=leave_id)
+    leave.status = 'Approved' if action == 'approve' else 'Rejected'
+    leave.save()
+    return redirect("view_leave")
+
+
+
 
 
 # ---------------- FACULTY VIEWS ----------------

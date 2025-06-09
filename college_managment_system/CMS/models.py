@@ -176,16 +176,36 @@ class StudentResult(models.Model):
 
 
 # apply leave
+# class LeaveRequest(models.Model):
+#     USER_TYPE_CHOICES = (
+#         ('Faculty', 'Faculty'),
+#         ('Student', 'Student'),
+#     )
+#     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+#     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
+#     reason = models.TextField()
+#     status = models.CharField(max_length=10, choices=(('Pending', 'Pending'), ('Approved', 'Approved'), ('Rejected', 'Rejected')), default='Pending')
+#     date = models.DateField(auto_now_add=True)
+
 class LeaveRequest(models.Model):
     USER_TYPE_CHOICES = (
         ('Faculty', 'Faculty'),
         ('Student', 'Student'),
     )
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
     reason = models.TextField()
-    status = models.CharField(max_length=10, choices=(('Pending', 'Pending'), ('Approved', 'Approved'), ('Rejected', 'Rejected')), default='Pending')
+    status = models.CharField(
+        max_length=10,
+        choices=(('Pending', 'Pending'), ('Approved', 'Approved'), ('Rejected', 'Rejected')),
+        default='Pending'
+    )
     date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} ({self.user_type}) - {self.status}"
+    
+
 
 # assignment (faculty)
 class Assignment(models.Model):

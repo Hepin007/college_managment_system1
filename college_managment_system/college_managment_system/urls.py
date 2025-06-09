@@ -50,8 +50,14 @@ urlpatterns = [
     path('hod/delete-timetable/<int:timetable_id>/', views.delete_timetable, name='delete_timetable'),
 
     # Leave Applications
-    path('hod/view-leave/', views.view_leave, name='view_leave'),
-    path('hod/approve-leave/<int:leave_id>/', views.approve_leave, name='approve_leave'),
+    # path('hod/view-leave/', views.view_leave, name='view_leave'),
+    # path('hod/approve-leave/<int:leave_id>/', views.approve_leave, name='approve_leave'),
+    
+     path("manage/leave/", views.view_leave, name="view_leave"),
+    path("manage/leave/student/<int:leave_id>/<str:action>/", views.approve_leave_student, name="approve_leave_student"),
+    path("manage/leave/faculty/<int:leave_id>/<str:action>/", views.approve_leave_faculty, name="approve_leave_faculty"),
+    
+    
 
     # ========== FACULTY ==========
     path('faculty/dashboard/', views.faculty_dashboard, name='faculty_dashboard'),
