@@ -333,12 +333,12 @@ def delete_timetable(request, timetable_id):
 #     return redirect("view_leave")    
 
 
-from .models import LeaveReportStudent, LeaveReportFaculty  # Make sure these are correct
+from .models import LeaveRequest # Make sure these are correct
 
 @login_required
 def view_leave(request):
-    student_leaves = LeaveReportStudent.objects.all().order_by('-date')
-    faculty_leaves = LeaveReportFaculty.objects.all().order_by('-date')
+    student_leaves = LeaveRequest.objects.all().filter(user_type = "Student").order_by('-date')
+    faculty_leaves = LeaveRequest.objects.all().filter(user_type = "Faculty").order_by('-date')
     return render(request, "hod_review_leave.html", {
         "student_leaves": student_leaves,
         "faculty_leaves": faculty_leaves
@@ -346,14 +346,14 @@ def view_leave(request):
 
 @login_required
 def approve_leave_student(request, leave_id, action):
-    leave = get_object_or_404(LeaveReportStudent, id=leave_id)
+    leave = get_object_or_404(LeaveRequest, id=leave_id)
     leave.status = 'Approved' if action == 'approve' else 'Rejected'
     leave.save()
     return redirect("view_leave")
 
 @login_required
 def approve_leave_faculty(request, leave_id, action):
-    leave = get_object_or_404(LeaveReportFaculty, id=leave_id)
+    leave = get_object_or_404(LeaveRequest, id=leave_id)
     leave.status = 'Approved' if action == 'approve' else 'Rejected'
     leave.save()
     return redirect("view_leave")

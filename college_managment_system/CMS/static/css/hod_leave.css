@@ -1,3 +1,15 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f9;
+}
+
+.manage-container {
+    display: flex;
+    height: 100vh;
+    
+}
+
 .main-content {
     margin-left: 250px;
     padding: 20px;
