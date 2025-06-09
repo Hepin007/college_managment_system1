@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Timetable</title>
+    <link rel="stylesheet" href="{% static 'css/hod_manage_timetable.css' %}">
+    <link rel="stylesheet" href="{% static 'css/hod_sidebar.css' %}">
+</head>
+<body>
+    <div class="manage-container">
+        {% include 'hod_sidebar.html' %}
+        <div class="main-content">
+            <h1>Manage Timetable</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Add Entry</button>
+        </form>
+
+        <h4>Current Timetable</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Department</th>
+                    <th>Semester</th>
+                    <th>Subject</th>
+                    <th>Faculty</th>
+                    <th>Day</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in timetables %}
+                <tr>
+                    <td>{{ entry.department.name }}</td>
+                    <td>{{ entry.semester }}</td>
+                    <td>{{ entry.subject.name }}</td>
+                    <td>{{ entry.faculty }}</td>
+                    <td>{{ entry.day }}</td>
+                    <td>{{ entry.start_time }}</td>
+                    <td>{{ entry.end_time }}</td>
+                    <td>
+                        <a href="{% url 'delete_timetable' entry.id %}" class="btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8">No timetable entries.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+</body>
+</html>

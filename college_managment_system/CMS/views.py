@@ -267,34 +267,57 @@ def toggle_attendance(request, report_id):
 
 @login_required
 def review_result(request):
-    results = StudentResult.objects.select_related('student', 'subject')
-    return render(request, "review_result.html", {"results": results})
+    hod = get_object_or_404(HOD,user=request.user)
+
+    # Filter results based on department's students
+    results = StudentResult.objects.filter(
+        student__department=hod.department,
+        reviewed_by_HOD=False
+    )
+
+    if request.method == 'POST':
+        result_id = request.POST.get('result_id')
+        action = request.POST.get('action')
+
+        result = get_object_or_404(StudentResult, id=result_id)
+
+        if action == 'approve':
+            result.status = 'Reviewed'
+            result.reviewed_by_HOD = True
+            result.save()
+        elif action == 'reject':
+            result.status = 'Rejected'
+            result.reviewed_by_HOD = True
+            result.save()
+
+        return redirect('review_result')
+
+    return render(request, 'hod_review_result.html', {'results': results})
 
 @login_required
 def make_timetable(request):
-    timetables = Timetable.objects.all()
-    subjects = Subject.objects.all()
-    faculties = Faculty.objects.all()
-    if request.method == "POST":
-        subject_id = request.POST['subject']
-        faculty_id = request.POST['faculty']
-        day = request.POST['day']
-        time = request.POST['time']
-        subject = Subject.objects.get(id=subject_id)
-        faculty = Faculty.objects.get(id=faculty_id)
-        Timetable.objects.create(subject=subject, faculty=faculty, department=subject.department, day=day, time=time)
-        return redirect("make_timetable")
-    return render(request, "make_timetable.html", {
-        "timetables": timetables,
-        "subjects": subjects,
-        "faculties": faculties
+    timetables = Timetable.objects.all().order_by('day', 'start_time')
+    form = TimetableForm(request.POST or None)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Timetable entry added successfully.")
+            return redirect('make_timetable')
+        else:
+            messages.error(request, "Please correct the error below.")
+
+    return render(request, 'hod_manage_timetable.html', {
+        'form': form,
+        'timetables': timetables
     })
 
 @login_required
 def delete_timetable(request, timetable_id):
     timetable = get_object_or_404(Timetable, id=timetable_id)
     timetable.delete()
-    return redirect("make_timetable")
+    messages.success(request, "Timetable entry deleted.")
+    return redirect('make_timetable')
 
 @login_required
 def view_leave(request):

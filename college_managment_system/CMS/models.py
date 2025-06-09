@@ -103,14 +103,35 @@ class Subject(models.Model):
 
 # Timetable
 class Timetable(models.Model):
+    DAY_CHOICES = (
+        ('Monday', 'Monday'),
+        ('Tuesday', 'Tuesday'),
+        ('Wednesday', 'Wednesday'),
+        ('Thursday', 'Thursday'),
+        ('Friday', 'Friday'),
+        ('Saturday', 'Saturday'),
+    )
+    SEMESTER_CHOICES = (
+        ('Semester 1', 'Semester 1'),
+        ('Semester 2', 'Semester 2'),
+        ('Semester 3', 'Semester 3'),
+        ('Semester 4', 'Semester 4'),
+        ('Semester 5', 'Semester 5'),
+        ('Semester 6', 'Semester 6'),
+        ('Semester 7', 'Semester 7'),
+        ('Semester 8', 'Semester 8'),
+    )
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    semester = models.CharField(max_length=20,choices=SEMESTER_CHOICES)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE)
-    day = models.CharField(max_length=20)
-    time = models.TimeField()
+    day = models.CharField(max_length=20, choices=DAY_CHOICES)
+    start_time = models.TimeField(null=True, blank=True)
+    end_time = models.TimeField(null=True, blank=True)
+    
 
     def __str__(self):
-        return f"{self.subject.name} - {self.day} - {self.time}"
+        return f"{self.subject.name} - {self.day} - {self.start_time} - {self.end_time}"
 
 
 # attendance
@@ -140,9 +161,18 @@ class AttendanceReport(models.Model):
 
 # result
 class StudentResult(models.Model):
+    STATUS_CHOICES = (
+        ('Pending', 'Pending'),
+        ('Reviewed', 'Reviewed'),
+        ('Rejected', 'Rejected'),
+    )
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE)
     grade = models.CharField(max_length=2)  # A, B, C, etc.
+    semester = models.IntegerField()
+    reviewed_by_HOD = models.BooleanField(default=False)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
 
 
 # apply leave

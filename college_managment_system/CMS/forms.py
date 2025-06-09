@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import (
-    CustomUser, Student, Faculty, Subject, Timetable, Assignment, Submission,
+    CustomUser, Department, Student, Faculty, Subject, Timetable, Assignment, Submission,
     LeaveRequest, Feedback, Attendance, AttendanceReport,
     StudentResult, Fee
 )
@@ -105,11 +105,25 @@ class AttendanceFilterForm(forms.Form):
 #             )
 
 
+# ---------- Result Form ----------
+class ResultReviewForm(forms.ModelForm):
+    class Meta:
+        model = StudentResult
+        fields = ['status']
+
 # --------- Timetable Form ---------
 class TimetableForm(forms.ModelForm):
     class Meta:
         model = Timetable
-        fields = ['subject', 'faculty', 'department', 'day', 'time']
+        fields = '__all__'
+        widgets = {
+            'start_time': forms.TimeInput(attrs={'type': 'time'}),
+            'end_time': forms.TimeInput(attrs={'type': 'time'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['department'].queryset = Department.objects.all()
 
 # --------- Assignment Upload Form ---------
 class AssignmentForm(forms.ModelForm):
