@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Grade Entry</title>
+    <link rel="stylesheet" href="{% static 'css/faculty_student_grade.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+</head>
+<body>
+<div class="manage-container">
+    
+{% include 'faculty_sidebar.html' %}
+<div class="main-content">  
+    <h2>Student Grade Entry</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-section">
+            <label for="semester">Select Semester:</label>
+            <select name="semester" id="semester" required>
+                <option value="">-- Choose Semester --</option>
+                {% for i in "12345678" %}
+                    <option value="{{ i }}" {% if semester|stringformat:"s" == i %}selected{% endif %}>Semester {{ i }}</option>
+                {% endfor %}
+            </select>
+            <br><br>
+            <button type="submit" name="load">Load</button>
+        </div>
+    </form>
+
+    {% if grade_form %}
+        <form method="post">
+            {% csrf_token %}
+            {{ grade_form.as_p }}
+            <input type="hidden" name="semester" value="{{ semester }}">
+            <button type="submit" name="submit_grade">Submit Grade</button>
+        </form>
+    {% endif %}
+
+    {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    </div>
+    </div>
+</body>
+</html>
