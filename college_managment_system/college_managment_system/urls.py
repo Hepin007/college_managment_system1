@@ -83,6 +83,8 @@ urlpatterns = [
 
     # Attendance
     path('student/attendance/', views.view_attendance, name='student_attendance'),
+    
+    path("student/timetable/", views.student_timetable, name="student_timetable"),
 
     # Result
     path('student/result/', views.result, name='student_result'),

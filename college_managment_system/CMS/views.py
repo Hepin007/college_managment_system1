@@ -367,9 +367,6 @@ def approve_leave_faculty(request, leave_id, action):
     return redirect("view_leave")
 
 
-
-
-
 # ---------------- FACULTY VIEWS ----------------
 
 @login_required
@@ -392,7 +389,6 @@ def mark_attendance(request, subject_id):
     return render(request, "faculty_mark_attendance.html", {"students": students, "subject": subject})
 
 @login_required
-
 def student_grade(request):
     semester_form = SemesterForm(request.POST or None)
     grade_form = None
@@ -429,21 +425,34 @@ def student_grade(request):
     }
     return render(request, 'faculty_student_grade.html', context)
 
+
 @login_required
 def student_assignment(request):
-    faculty = request.user.faculty
-    assignments = Assignment.objects.filter(faculty=faculty)
+    try:
+        faculty = request.user.faculty
+    except:
+        return redirect('home')  
+
     subjects = Subject.objects.filter(faculty=faculty)
-    if request.method == "POST":
-        subject_id = request.POST['subject']
-        title = request.POST['title']
-        description = request.POST['description']
-        due_date = request.POST['due_date']
-        file = request.FILES['file']
-        subject = Subject.objects.get(id=subject_id)
-        Assignment.objects.create(subject=subject, faculty=faculty, title=title, description=description, due_date=due_date, file=file)
-        return redirect("student_assignment")
-    return render(request, "faculty_student_assignment.html", {"assignments": assignments, "subjects": subjects})
+    assignments = Assignment.objects.filter(faculty=faculty)
+
+    if request.method == 'POST':
+        form = AssignmentForm(request.POST, request.FILES)
+        if form.is_valid():
+            assignment = form.save(commit=False)
+            assignment.faculty = faculty
+            assignment.save()
+            return redirect('student_assignment')
+    else:
+        form = AssignmentForm()
+
+    form.fields['subject'].queryset = subjects  # limit subject choices to faculty
+
+    return render(request, 'faculty_student_assignment.html', {
+        'form': form,
+        'assignments': assignments
+    })
+
 
 @login_required
 def student_submission(request):
@@ -487,6 +496,10 @@ def view_attendance(request):
     student = request.user.student
     reports = AttendanceReport.objects.filter(student=student)
     return render(request, "student_attendance.html", {"reports": reports})
+
+@login_required
+def student_timetable(request):
+    return render(request, 'student_timetable.html')
 
 @login_required
 def result(request):

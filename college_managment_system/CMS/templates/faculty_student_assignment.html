@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Give Assignment</title>
+    <link rel="stylesheet" href="{% static 'css/faculty_assignment.css' %}">
+</head>
+<body>
+    <div class="container">
+         {% include 'faculty_sidebar.html' %}
+        <h1>Give Assignment</h1>
+        <form method="POST" enctype="multipart/form-data" class="assignment-form">
+            {% csrf_token %}
+            <label for="subject">Subject:</label>
+            <select name="subject" required>
+                <option value="">-- Select Subject --</option>
+                {% for subject in subjects %}
+                <option value="{{ subject.id }}">{{ subject.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="title">Assignment Title:</label>
+            <input type="text" name="title" required>
+
+            <label for="description">Description:</label>
+            <textarea name="description" rows="4" required></textarea>
+
+            <label for="due_date">Due Date:</label>
+            <input type="date" name="due_date" required>
+
+            <label for="file">Attach File:</label>
+            <input type="file" name="file" required>
+
+            <button type="submit">Submit Assignment</button>
+        </form>
+
+        <hr>
+
+        <h2>Previous Assignments</h2>
+
+        {% if assignments %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Upload Date</th>
+                    <th>Due Date</th>
+                    <th>File</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assignment in assignments %}
+                <tr>
+                    <td>{{ assignment.subject.name }}</td>
+                    <td>{{ assignment.title }}</td>
+                    <td>{{ assignment.description }}</td>
+                    <td>{{ assignment.upload_date|date:"M d, Y" }}</td>
+                    <td>{{ assignment.due_date|date:"M d, Y" }}</td>
+                    <td><a href="{{ assignment.file.url }}" target="_blank">View</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="no-assignments">
+            <p>No assignments submitted yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

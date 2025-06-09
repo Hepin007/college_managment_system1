@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/student_dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/student_sidebar.css' %}">
+</head>
+<body>
+<div class="dashboard-container">
+
+    {% include 'student_sidebar.html' %}
+
+    <div class="main-content">
+        <div class="welcome-box">
+            <h2>Hiiii, {{ request.user.first_name|default:request.user.username }}</h2>
+            <p>Department: {{ request.user.student.department }}</p>
+        </div>
+
+        <div class="info-box">
+            <h3>Welcome to your portal!</h3>
+            <p>Please use the sidebar to navigate through your resources.</p>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

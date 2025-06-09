@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Submissions</title>
+    <link rel="stylesheet" href="{% static 'css/faculty_submission.css' %}">
+     <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+</head>
+<body>
+    <div class="container">
+         {% include 'faculty_sidebar.html' %}
+        <h1>Student Submissions</h1>
+
+        {% if submissions %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Assignment Title</th>
+                    <th>Student</th>
+                    <th>File</th>
+                    <th>Submitted On</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for submission in submissions %}
+                <tr>
+                    <td>{{ submission.assignment.subject.name }}</td>
+                    <td>{{ submission.assignment.title }}</td>
+                    <td>{{ submission.student.user.get_full_name }}</td>
+                    <td><a href="{{ submission.file.url }}" target="_blank">View</a></td>
+                    <td>{{ submission.submitted_on|date:"M d, Y H:i" }}</td>
+                    <td>
+                        {% if submission.approved %}
+                            Approved
+                        {% else %}
+                            Pending
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not submission.approved %}
+                        <a class="approve-btn" href="{% url 'approve_submission' submission.id %}">Approve</a>
+                        {% else %}
+                        ---
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="no-submissions">
+            <p>No submissions yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
