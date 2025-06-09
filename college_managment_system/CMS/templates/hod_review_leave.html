@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Leave Approval Panel</title>
+  <link rel="stylesheet" href="{% static 'css/hod_leave.css' %}">
+  <link rel="stylesheet" href="{% static 'css/hod_sidebar.css' %}">
+</head>
+<body>
+<div class="dashboard-container">
+  {% include 'hod_sidebar.html' %}
+
+  <div class="main-content">
+    <div class="header">
+      <h1>Leave Approval Panel</h1>
+    </div>
+
+    <div class="leave-section">
+      <h2>Student Leave Requests</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Reason</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for leave in student_leaves %}
+          <tr>
+            <td>{{ leave.student_id.admin.username }}</td>
+            <td>{{ leave.reason }}</td>
+            <td>{{ leave.date }}</td>
+            <td class="status-{{ leave.status|lower }}">{{ leave.status }}</td>
+            <td>
+              {% if leave.status == 'Pending' %}
+              <a href="{% url 'approve_leave_student' leave.id 'approve' %}" class="btn approve">Approve</a>
+              <a href="{% url 'approve_leave_student' leave.id 'reject' %}" class="btn reject">Reject</a>
+              {% else %}-{% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5">No student leave requests found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="leave-section">
+      <h2>Faculty Leave Requests</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Reason</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for leave in faculty_leaves %}
+          <tr>
+            <td>{{ leave.faculty_id.admin.username }}</td>
+            <td>{{ leave.reason }}</td>
+            <td>{{ leave.date }}</td>
+            <td class="status-{{ leave.status|lower }}">{{ leave.status }}</td>
+            <td>
+              {% if leave.status == 'Pending' %}
+              <a href="{% url 'approve_leave_faculty' leave.id 'approve' %}" class="btn approve">Approve</a>
+              <a href="{% url 'approve_leave_faculty' leave.id 'reject' %}" class="btn reject">Reject</a>
+              {% else %}-{% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5">No faculty leave requests found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
