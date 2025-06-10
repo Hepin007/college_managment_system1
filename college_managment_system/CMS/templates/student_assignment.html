@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Assignments</title>
+    <link rel="stylesheet" href="{% static 'css/student_dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/student_sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/student_assignment.css' %}">
+</head>
+<body>
+<div class="dashboard-container">
+    {% include 'student_sidebar.html' %}
+
+    <div class="main-content">
+        <div class="welcome-box">
+            <h2>Hi {{ request.user.first_name|default:request.user.username }}</h2>
+            <p>Department: {{ request.user.student.department }}</p>
+        </div>
+
+        <div class="assignment-box">
+            <h3>Available Assignments</h3>
+            {% if assignments %}
+                <ul class="assignment-list">
+                    {% for assignment in assignments %}
+                    <li>
+                        <strong>{{ assignment.title }}</strong> - {{ assignment.subject.name }}<br>
+                        Due: {{ assignment.due_date|date:"M d, Y" }}<br>
+                        <a href="{{ assignment.file.url }}" target="_blank">View PDF</a>
+                        <form method="POST" enctype="multipart/form-data" class="submission-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="assignment" value="{{ assignment.id }}">
+                            <input type="file" name="file" accept="application/pdf" required>
+                            <button type="submit">Submit PDF</button>
+                        </form>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No assignments available.</p>
+            {% endif %}
+        </div>
+
+        <div class="submission-history">
+            <h3>Your Submissions</h3>
+            {% if submissions %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Assignment</th>
+                        <th>Submitted File</th>
+                        <th>Submitted On</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for submission in submissions %}
+                    <tr>
+                        <td>{{ submission.assignment.title }}</td>
+                        <td><a href="{{ submission.file.url }}" target="_blank">View</a></td>
+                        <td>{{ submission.submitted_on|date:"M d, Y H:i" }}</td>
+                        <td>{{ submission.approved|yesno:"Approved,Pending" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p>No submissions yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+</body>
+</html>

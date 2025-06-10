@@ -514,7 +514,7 @@ def apply_leave_fact(request):
 
 # ---------------- STUDENT VIEWS ----------------
 
-@login_required
+@login_required # done
 def student_dashboard(request):
     student = request.user.student
     subjects = Subject.objects.filter(department=student.department)
@@ -567,7 +567,7 @@ def feedback(request):
         return redirect("feedback")
     return render(request, "student_feedback.html") 
 
-@login_required
+@login_required #done
 def student_leave(request):
     user = request.user
     if not hasattr(user, 'student'):
@@ -590,7 +590,7 @@ def student_leave(request):
     }
     return render(request, 'student_apply_leave.html', context)
 
-@login_required
+@login_required #done
 def apply_leave_student(request):
     user = request.user
     if not hasattr(user, 'student'):
@@ -611,7 +611,7 @@ def apply_leave_student(request):
     return render(request, 'student_apply_leave.html', {'form': form, 'leave_requests': leave_requests})
 
 
-@login_required
+@login_required #done
 def logout_view(request):
     logout(request)
     return redirect('home')
