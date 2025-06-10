@@ -427,32 +427,39 @@ def student_grade(request):
 
 
 @login_required
-def student_assignment(request):
-    try:
-        faculty = request.user.faculty
-    except:
-        return redirect('home')  
-
-    subjects = Subject.objects.filter(faculty=faculty)
-    assignments = Assignment.objects.filter(faculty=faculty)
+def faculty_assignment(request):
+    faculty =  request.user.faculty
+    semester_selected = None
+    subjects = None
+    assignment_form = None
 
     if request.method == 'POST':
-        form = AssignmentForm(request.POST, request.FILES)
-        if form.is_valid():
-            assignment = form.save(commit=False)
-            assignment.faculty = faculty
-            assignment.save()
-            return redirect('student_assignment')
+        if 'load_subjects' in request.POST:
+            semester_form = SemesterForm(request.POST)
+            if semester_form.is_valid():
+                semester_selected = semester_form.cleaned_data['semester']
+                subjects = Subject.objects.filter(semester=semester_selected, faculty=faculty)
+                assignment_form = AssignmentForm()
+                assignment_form.fields['subject'].queryset = subjects
+
+        elif 'submit_assignment' in request.POST:
+            semester_form = SemesterForm(request.POST)
+            assignment_form = AssignmentForm(request.POST, request.FILES)
+            if semester_form.is_valid() and assignment_form.is_valid():
+                assignment = assignment_form.save(commit=False)
+                assignment.faculty = faculty
+                assignment.semester = semester_form.cleaned_data['semester']
+                assignment.save()
+                return redirect('faculty_assignment')
     else:
-        form = AssignmentForm()
+        semester_form = SemesterForm()
 
-    form.fields['subject'].queryset = subjects  # limit subject choices to faculty
-
-    return render(request, 'faculty_student_assignment.html', {
-        'form': form,
-        'assignments': assignments
-    })
-
+    context = {
+        'semester_form': semester_form,
+        'assignment_form': assignment_form,
+        'semester_selected': semester_selected,
+    }
+    return render(request, 'faculty_student_assignment.html', context)
 
 @login_required
 def student_submission(request):
@@ -469,17 +476,39 @@ def approve_submission(request, submission_id):
 
 @login_required
 def faculty_timetable(request):
-    timetable = Timetable.objects.filter(faculty=request.user.faculty)
-    return render(request, "faculty_timetable.html", {"timetable": timetable})
+    faculty = request.user.faculty  # assuming `request.user` is linked to Faculty model via OneToOne
+    timetable = Timetable.objects.filter(faculty=faculty).order_by('day', 'start_time')
+
+    # Organize timetable day-wise
+    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    day_wise_timetable = {day: [] for day in days}
+    for entry in timetable:
+        day_wise_timetable[entry.day].append(entry)
+
+    context = {
+        'day_wise_timetable': day_wise_timetable
+    }
+    return render(request, 'faculty_timetable.html', context)
 
 @login_required
 def apply_leave_fact(request):
-    leaves = LeaveRequest.objects.filter(user=request.user)
-    if request.method == "POST":
-        reason = request.POST['reason']
-        LeaveRequest.objects.create(user=request.user, user_type='Faculty', reason=reason)
-        return redirect("apply_leave_fact")
-    return render(request, "faculty_leave.html", {"leaves": leaves}) 
+    user = request.user
+    if not hasattr(user, 'faculty'):
+        return redirect('home')  # or show unauthorized
+
+    if request.method == 'POST':
+        form = LeaveRequestForm(request.POST)
+        if form.is_valid():
+            leave = form.save(commit=False)
+            leave.user = user
+            leave.user_type = 'Faculty'
+            leave.save()
+            return redirect('apply_leave_fact')  # redirect to same page or leave history
+    else:
+        form = LeaveRequestForm()
+
+    leave_requests = LeaveRequest.objects.filter(user=user).order_by('-date')
+    return render(request, 'faculty_apply_leave.html', {'form': form, 'leave_requests': leave_requests})
 
 
 
@@ -539,13 +568,24 @@ def feedback(request):
     return render(request, "student_feedback.html")
 
 @login_required
-def apply_leave(request):
-    leaves = LeaveRequest.objects.filter(user=request.user)
-    if request.method == "POST":
-        reason = request.POST['reason']
-        LeaveRequest.objects.create(user=request.user, user_type='Student', reason=reason)
-        return redirect("apply_leave")
-    return render(request, "student_leave.html", {"leaves": leaves})
+def apply_leave_student(request):
+    user = request.user
+    if not hasattr(user, 'student'):
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = LeaveRequestForm(request.POST)
+        if form.is_valid():
+            leave = form.save(commit=False)
+            leave.user = user
+            leave.user_type = 'Student'
+            leave.save()
+            return redirect('apply_leave_student')
+    else:
+        form = LeaveRequestForm()
+
+    leave_requests = LeaveRequest.objects.filter(user=user).order_by('-date')
+    return render(request, 'student_apply_leave.html', {'form': form, 'leave_requests': leave_requests})
 
 
 @login_required

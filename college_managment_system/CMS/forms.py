@@ -1,3 +1,4 @@
+from datetime import datetime
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import (
@@ -151,10 +152,21 @@ class TimetableForm(forms.ModelForm):
 
 
 # --------- Assignment Upload Form ---------
+class SemesterForm(forms.Form):
+    semester = forms.ChoiceField(
+        choices=Assignment.SEMESTER_CHOICES,
+        label="Select Semester",
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
 class AssignmentForm(forms.ModelForm):
     class Meta:
         model = Assignment
-        fields = ['subject', 'faculty', 'title', 'description', 'due_date', 'file']
+        fields = ['subject', 'title', 'description', 'due_date', 'file']
+        widgets = {
+            'due_date': forms.DateInput(attrs={'type': 'date'}),
+        }
 
 # --------- Submission Upload Form ---------
 class SubmissionForm(forms.ModelForm):
@@ -166,7 +178,15 @@ class SubmissionForm(forms.ModelForm):
 class LeaveRequestForm(forms.ModelForm):
     class Meta:
         model = LeaveRequest
-        fields = ['reason']
+        fields = ['start_date', 'end_date' , 'reason']
+        widgets = {
+            'reason': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Enter reason for leave...'}),
+            'start_date': forms.DateInput(attrs={'type': 'date','required': True}),
+            'end_date': forms.DateInput(attrs={'type': 'date','required': True}),
+        }
+        labels = {
+            'reason': 'Reason for Leave',
+        }
 
 # --------- Feedback Form ---------
 class FeedbackForm(forms.ModelForm):

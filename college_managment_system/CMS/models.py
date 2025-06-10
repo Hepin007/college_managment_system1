@@ -201,20 +201,33 @@ class LeaveRequest(models.Model):
         default='Pending'
     )
     date = models.DateField(auto_now_add=True)
-
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+ # Optional start date for leave
     def __str__(self):
-        return f"{self.user.username} ({self.user_type}) - {self.status}"
+        return f"{self.user.username} ({self.user_type}) - {self.status} - {self.start_date} to {self.end_date}"
     
 
 
 # assignment (faculty)
 class Assignment(models.Model):
+    SEMESTER_CHOICES = (
+        ('Semester 1', 'Semester 1'),
+        ('Semester 2', 'Semester 2'),
+        ('Semester 3', 'Semester 3'),
+        ('Semester 4', 'Semester 4'),
+        ('Semester 5', 'Semester 5'),
+        ('Semester 6', 'Semester 6'),
+        ('Semester 7', 'Semester 7'),
+        ('Semester 8', 'Semester 8'),
+    )
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE)
+    semester = models.CharField(max_length=20,choices=SEMESTER_CHOICES)
     title = models.CharField(max_length=200)
     description = models.TextField()
     due_date = models.DateField()
-    file = models.FileField(upload_to='assignments/')
+    file = models.FileField(upload_to='assignments/', null=True, blank=True)
 
 
 # submisson (faculty)

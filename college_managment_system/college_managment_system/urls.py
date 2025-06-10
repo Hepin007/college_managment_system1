@@ -68,7 +68,7 @@ urlpatterns = [
     path('faculty/student-grade/', views.student_grade, name='student_grade'),
 
     # Assignment
-    path('faculty/student-assignment/', views.student_assignment, name='student_assignment'),
+    path('faculty/student-assignment/', views.faculty_assignment, name='faculty_assignment'),
     path('faculty/student-submission/', views.student_submission, name='student_submission'),
     path('faculty/approve-submission/<int:submission_id>/', views.approve_submission, name='approve_submission'),
 
@@ -99,7 +99,7 @@ urlpatterns = [
     path('student/feedback/', views.feedback, name='student_feedback'),
 
     # Leave
-    path('student/leave/', views.apply_leave, name='student_leave'),
+    path('student/leave/', views.apply_leave_student, name='apply_leave_student'),
 
     # ========== COMMON ==========
     path('logout/', views.logout_view, name='logout'),
