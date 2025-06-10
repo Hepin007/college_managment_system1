@@ -606,7 +606,30 @@ def feedback(request):
         feedback_text = request.POST['feedback']
         Feedback.objects.create(student=student, feedback_text=feedback_text)
         return redirect("feedback")
-    return render(request, "student_feedback.html")
+    return render(request, "student_feedback.html") 
+
+@login_required
+def student_leave(request):
+    user = request.user
+    if not hasattr(user, 'student'):
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = LeaveRequestForm(request.POST)
+        if form.is_valid():
+            leave = form.save(commit=False)
+            leave.user = user
+            leave.user_type = 'Student'
+            leave.save()
+            return redirect('student_leave')
+    else:
+        form = LeaveRequestForm()
+    leave_requests = LeaveRequest.objects.filter(user=user).order_by('-date')
+    context = {
+        'form': form, 
+        'leave_requests': leave_requests
+    }
+    return render(request, 'student_apply_leave.html', context)
 
 @login_required
 def apply_leave_student(request):
