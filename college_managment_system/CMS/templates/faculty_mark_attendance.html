@@ -3,13 +3,14 @@
 <html>
 <head>
     <title>Mark Attendance</title>
-    <style>
-        .present-btn { background-color: green; color: white; }
-        .absent-btn { background-color: red; color: white; }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/faculty_mark_attendance.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
 </head>
 <body>
-<div class="container mt-4">
+<div class="manage-container">
+    {% include 'faculty_sidebar.html' %}
+
+        <div class="main-content">
     <h2 class="mb-4">Mark Attendance</h2>
 
     <!-- Semester selection -->
@@ -69,6 +70,7 @@
         <button type="submit" name="submit_attendance" class="btn btn-primary">Submit Attendance</button>
     </form>
     {% endif %}
+</div>
 </div>
 </body>
 </html>
