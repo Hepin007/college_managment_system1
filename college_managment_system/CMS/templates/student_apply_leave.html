@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Leave Application</title>
+    <link rel="stylesheet" href="{% static 'css/student_dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/student_sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/student_leave.css' %}">
+</head>
+<body>
+<div class="dashboard-container">
+
+    {% include 'student_sidebar.html' %}
+
+    <div class="main-content">
+        <div class="welcome-box">
+            <h2>Hello, {{ request.user.first_name|default:request.user.username }}</h2>
+            <p>Department: {{ request.user.student.department }}</p>
+        </div>
+
+        <div class="leave-application-box">
+            <h2>Apply for Leave</h2>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Submit Leave Request</button>
+            </form>
+        </div>
+
+        <div class="leave-history-box">
+            <h3>Your Leave Requests</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Applied On</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for leave in leave_requests %}
+                    <tr>
+                        <td>{{ leave.date }}</td>
+                        <td>{{ leave.start_date }}</td>
+                        <td>{{ leave.end_date }}</td>
+                        <td>{{ leave.reason }}</td>
+                        <td>{{ leave.status }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No leave requests found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
