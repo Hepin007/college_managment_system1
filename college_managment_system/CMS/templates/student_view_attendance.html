@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Attendance</title>
+    <link rel="stylesheet" href="{% static 'css/student_attendance.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>Your Attendance</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Total Classes</th>
+                    <th>Present</th>
+                    <th>Absent</th>
+                    <th>Attendance %</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in attendance_data %}
+                <tr>
+                    <td>{{ data.subject }}</td>
+                    <td>{{ data.total_classes }}</td>
+                    <td>{{ data.present }}</td>
+                    <td>{{ data.absent }}</td>
+                    <td>{{ data.percentage|floatformat:2 }}%</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No subjects or attendance data available.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

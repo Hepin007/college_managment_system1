@@ -666,7 +666,7 @@ def assignment_submission(request):
         "submissions": submissions
     })
 
-@login_required
+@login_required 
 def feedback(request):
     student = request.user.student
     if request.method == "POST":
@@ -716,7 +716,31 @@ def apply_leave_student(request):
         form = LeaveRequestForm()
 
     leave_requests = LeaveRequest.objects.filter(user=user).order_by('-date')
-    return render(request, 'student_apply_leave.html', {'form': form, 'leave_requests': leave_requests})
+    return render(request, 'student_apply_leave.html', {'form': form, 'leave_requests': leave_requests}) 
+
+
+@login_required # done
+def student_view_attendance(request):
+    student = request.user.student
+    subjects = Subject.objects.filter(department=student.department, semester=student.semester)
+    attendance_data = []
+
+    for subject in subjects:
+        attendance_reports = AttendanceReport.objects.filter(student=student, attendance__subject=subject)
+        total_classes = attendance_reports.count()
+        present_count = attendance_reports.filter(status='Present').count()
+
+        attendance_data.append({
+            'subject': subject.name,
+            'total_classes': total_classes,
+            'present': present_count,
+            'absent': total_classes - present_count,
+            'percentage': (present_count / total_classes) * 100 if total_classes else 0
+        })
+
+    return render(request, 'student_view_attendance.html', {
+        'attendance_data': attendance_data
+    })
 
 
 @login_required #done

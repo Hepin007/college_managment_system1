@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Fees</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/fees_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/student_sidebar.css' %}"> 
+</head>
+<body>
+    <div class="container">
+        <h1>My Fee Details</h1>
+
+        {% if fees %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Semester</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fee in fees %}
+                        <tr>
+                            <td>{{ fee.semester }}</td>
+                            <td>₹{{ fee.amount }}</td>
+                            <td class="status-{{ fee.status|lower }}">{{ fee.status }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-fees">No fee details found for your account.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

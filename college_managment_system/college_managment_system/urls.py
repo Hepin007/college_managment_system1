@@ -84,8 +84,12 @@ urlpatterns = [
     # Attendance
     path('student/attendance/', views.view_attendance, name='student_attendance'),
     
+    # Timetable
     path("student/timetable/", views.student_timetable, name="student_timetable"),
 
+    # Attendance
+    path('student/view-attendance/', views.student_view_attendance, name='student_view_attendance'),
+    
     # Result
     path('student/result/', views.result, name='student_result'),
 

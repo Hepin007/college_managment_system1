@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Feedback</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/student_feedback.css' %}">
+    <link rel="stylesheet" href="{% static 'css/student_sidebar.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Give Us Your Feedback!</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="feedback_text">Your Feedback:</label>
+                <textarea id="feedback_text" name="feedback" rows="7" placeholder="Share your thoughts here..." required></textarea>
+            </div>
+            <button type="submit" class="btn">Submit Feedback</button>
+        </form>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</body>
+</html>
