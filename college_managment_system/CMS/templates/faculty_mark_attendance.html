@@ -1,4 +1,4 @@
-{% load static %}
+{% comment %} {% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -71,4 +71,103 @@
     {% endif %}
 </div>
 </body>
+</html> {% endcomment %}  
+
+
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mark Attendance</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <style>
+        .present-btn { background-color: green; color: white; }
+        .absent-btn { background-color: red; color: white; }
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <h2 class="mb-4">Mark Attendance</h2>
+
+    <!-- Show success message -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert-success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Semester selection -->
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group mb-3">
+            <label for="id_semester">Select Semester:</label>
+            {{ semester_form.semester }}
+        </div>
+        <button type="submit" name="load_subjects" class="btn btn-primary">Load Subjects</button>
+    </form>
+
+    <!-- Subject selection -->
+    {% if semester_selected and subject_form %}
+    <form method="post" class="mt-3">
+        {% csrf_token %}
+        <!-- Retain semester value -->
+        <input type="hidden" name="semester" value="{{ semester_selected }}">
+        <div class="form-group mb-3">
+            <label for="id_subject">Select Subject:</label>
+            {{ subject_form.subject }}
+        </div>
+        <button type="submit" name="load_students" class="btn btn-success">Load Students</button>
+    </form>
+    {% endif %}
+
+    <!-- Student list and attendance form -->
+    {% if students %}
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        <input type="hidden" name="subject" value="{{ subject_selected.id }}">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Roll Number</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.roll_number }}</td>
+                    <td>{{ student.user.get_full_name }}</td>
+                    <td>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="status_{{ student.id }}" value="Present" required>
+                            <label class="form-check-label">Present</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="status_{{ student.id }}" value="Absent" required>
+                            <label class="form-check-label">Absent</label>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" name="submit_attendance" class="btn btn-primary">Submit Attendance</button>
+    </form>
+    {% endif %}
+</div>
+</body>
 </html>
+
+
+
+
+

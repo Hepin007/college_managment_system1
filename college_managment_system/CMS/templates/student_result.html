@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Results</title>
+    <link rel="stylesheet" href="{% static 'css/student_result.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+</head>
+<body>
+<div class="manage-container">
+    {% include 'student_sidebar.html' %}
+    <div class="main-content">
+        <h1>My Results</h1>
+
+        {% if results %}
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Faculty</th>
+                        <th>Grade</th>
+                        <th>Semester</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <td>{{ result.subject.name }}</td>
+                        <td>{{ result.faculty.name }}</td>
+                        <td>{{ result.grade }}</td>
+                        <td>{{ result.semester }}</td>
+                        <td>{{ result.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert">
+            No results available.
+        </div>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

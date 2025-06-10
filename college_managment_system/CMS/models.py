@@ -207,9 +207,8 @@ class LeaveRequest(models.Model):
     def __str__(self):
         return f"{self.user.username} ({self.user_type}) - {self.status} - {self.start_date} to {self.end_date}"
     
-
-
-# assignment (faculty)
+    
+# assignment (faculty) 
 class Assignment(models.Model):
     SEMESTER_CHOICES = (
         ('Semester 1', 'Semester 1'),
@@ -230,7 +229,7 @@ class Assignment(models.Model):
     file = models.FileField(upload_to='assignments/', null=True, blank=True)
 
 
-# submisson (faculty)
+# submisson (faculty) 
 class Submission(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
