@@ -195,15 +195,16 @@ class FeedbackForm(forms.ModelForm):
         fields = ['feedback_text']
 
 # --------- Attendance Marking Form ---------
-class AttendanceForm(forms.ModelForm):
-    class Meta:
-        model = Attendance
-        fields = ['subject', 'faculty', 'date']
+class SemesterForm(forms.Form):
+    SEMESTER_CHOICES = [(i, f'Semester {i}') for i in range(1, 9)]
+    semester = forms.ChoiceField(choices=SEMESTER_CHOICES)
 
-class AttendanceReportForm(forms.ModelForm):
-    class Meta:
-        model = AttendanceReport
-        fields = ['student', 'attendance', 'status']
+class SubjectForm(forms.Form):
+    subject = forms.ModelChoiceField(queryset=Subject.objects.none())
+
+    def __init__(self, faculty, semester, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['subject'].queryset = Subject.objects.filter(faculty=faculty, semester=semester)
 
 # --------- Grade Entry Form ---------
 class SemesterForm(forms.Form):

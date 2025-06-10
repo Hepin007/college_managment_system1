@@ -54,7 +54,7 @@ class Faculty(models.Model):
         return 0
 
     def __str__(self):
-        return f"Faculty: {self.user.username}"
+        return f"{self.user.username}"
 
 # Student Model
 class Student(models.Model):
@@ -88,7 +88,7 @@ class Student(models.Model):
         unique_together = ('roll_number', 'year')
 
     def __str__(self):
-        return f"Student: {self.user.username}"
+        return f"{self.user.username}"
 
 # Subject model
 class Subject(models.Model):

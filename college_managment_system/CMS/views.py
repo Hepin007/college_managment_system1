@@ -375,18 +375,59 @@ def faculty_dashboard(request):
     subject_count = Subject.objects.filter(faculty=faculty).count()
     return render(request, "faculty_dashboard.html", {"subject_count": subject_count})
 
+
 @login_required
-def mark_attendance(request, subject_id):
-    students = Student.objects.filter(department=request.user.faculty.department)
-    subject = Subject.objects.get(id=subject_id)
-    if request.method == "POST":
-        date_today = date.today()
-        attendance = Attendance.objects.create(subject=subject, faculty=request.user.faculty, date=date_today)
-        for student in students:
-            status = request.POST.get(f'student_{student.id}') == 'on'
-            AttendanceReport.objects.create(student=student, attendance=attendance, status=status)
-        return redirect("faculty_dashboard")
-    return render(request, "faculty_mark_attendance.html", {"students": students, "subject": subject})
+def mark_attendance(request):
+    faculty = request.user.faculty  # assuming CustomUser is linked to Faculty
+    students = []
+    subject_form = None
+    subject_selected = None
+    semester_selected = None
+
+    if request.method == 'POST':
+        semester_form = SemesterForm(request.POST)
+        if 'load_subjects' in request.POST and semester_form.is_valid():
+            semester_selected = semester_form.cleaned_data['semester']
+            subject_form = SubjectForm(faculty, semester_selected)
+        
+        elif 'load_students' in request.POST:
+            semester_form = SemesterForm(request.POST)
+            if semester_form.is_valid():
+                semester_selected = semester_form.cleaned_data['semester']
+            subject_form = SubjectForm(faculty, semester_selected, request.POST)
+            if semester_form.is_valid() and subject_form.is_valid():
+                subject_selected = subject_form.cleaned_data['subject']
+                students = Student.objects.filter(semester=semester_selected, department=subject_selected.department)
+
+
+        elif 'submit_attendance' in request.POST:
+            subject_id = request.POST.get('subject')
+            subject =   get_object_or_404(Subject, id=subject_id)
+            attendance = Attendance.objects.create(
+                subject=subject,
+                date=timezone.now().date(),
+                faculty=faculty
+            )
+            for key, value in request.POST.items():
+                if key.startswith('status_'):
+                    student_id = key.split('_')[1]
+                    student = Student.objects.get(id=student_id)
+                    AttendanceReport.objects.create(
+                        student=student,
+                        attendance=attendance,
+                        status=(value == 'Present')
+                    )
+            return redirect('mark_attendance')
+    else:
+        semester_form = SemesterForm()
+
+    return render(request, 'faculty_mark_attendance.html', {
+        'semester_form': semester_form,
+        'subject_form': subject_form,
+        'students': students,
+        'semester_selected': semester_selected,
+        'subject_selected': subject_selected,
+    })
 
 @login_required
 def student_grade(request):
