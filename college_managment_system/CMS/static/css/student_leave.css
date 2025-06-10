@@ -1,14 +1,3 @@
-body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f9;
-    margin: 0;
-}
-
-.main-content {
-    margin-left: 260px;
-    padding: 30px;
-    flex-grow: 1;
-}
 
 .leave-application-box, .leave-history-box {
     background: #fff;

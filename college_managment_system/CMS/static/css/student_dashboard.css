@@ -1,18 +1,4 @@
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f5f6fa;
-}
 
-.dashboard-container {
-    display: flex;
-}
-
-.main-content {
-    margin-left: 220px;
-    padding: 30px;
-    width: calc(100% - 220px);
-}
 
 .welcome-box {
     background: #fff;

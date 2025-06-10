@@ -1,3 +1,22 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+}
+
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+    
+}
+
+.main-content {
+    margin-left: 260px;
+    padding: 20px;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
 .sidebar {
     width: 250px;
     background-color: #172431;
