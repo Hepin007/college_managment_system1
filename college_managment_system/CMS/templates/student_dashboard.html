@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Student Dashboard</title>
     <link rel="stylesheet" href="{% static 'css/student_dashboard.css' %}">
-    <link rel="stylesheet" href="{% static 'css/student_sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
 </head>
 <body>
 <div class="dashboard-container">
@@ -16,6 +16,7 @@
         <div class="welcome-box">
             <h2>Hiiii, {{ request.user.first_name|default:request.user.username }}</h2>
             <p>Department: {{ request.user.student.department }}</p>
+            <p>Semester: {{ request.user.student.semester }}</p>
         </div>
 
         <div class="info-box">

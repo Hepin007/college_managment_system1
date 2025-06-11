@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Timetable</title>
+    <!-- Bootstrap CSS CDN (optional but recommended for styling) -->
+    <link rel="stylesheet" href="{%static 'css/student_timetable.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+</head>
+<body>
+    <div class="dashboard-container">
+        {% include 'student_sidebar.html' %}
+        <div class="main-content">
+            <h1>My Timetable</h1>
+        {% for day, lectures in timetable_by_day.items %}
+            <div class="day-section">
+                <h4>{{ day }}</h4>
+                {% if lectures %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Faculty</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for lecture in lectures %}
+                                <tr>
+                                    <td>{{ lecture.subject.name }}</td>
+                                    <td>{{ lecture.faculty }}</td>
+                                    <td>{{ lecture.start_time }}</td>
+                                    <td>{{ lecture.end_time }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="no-class">No lectures scheduled for this day.</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    </div>
+</body>
+</html>

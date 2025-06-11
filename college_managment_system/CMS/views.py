@@ -540,6 +540,7 @@ def faculty_assignment(request):
     semester_selected = None
     subjects = None
     assignment_form = None
+    semester_form = SemesterForm(request.POST or None)
 
     if request.method == 'POST':
         if 'load_subjects' in request.POST:
@@ -719,6 +720,28 @@ def apply_leave_student(request):
     return render(request, 'student_apply_leave.html', {'form': form, 'leave_requests': leave_requests}) 
 
 
+@login_required
+def student_timetable(request):
+
+    student = Student.objects.get(user=request.user)
+    formatted_semester = f"Semester {student.semester}"
+    # Fetch timetable for the student's department and semester
+    timetable_entries = Timetable.objects.filter(
+        department=student.department,
+        semester=formatted_semester
+    ).order_by('day', 'start_time')
+
+    # Organize timetable day-wise
+    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    day_wise_timetable = {day: [] for day in days}
+    for entry in timetable_entries:
+        day_wise_timetable[entry.day].append(entry)
+
+    context = {
+        'timetable_by_day': day_wise_timetable,
+    }
+    return render(request, 'student_timetable.html', context)
+
 @login_required # done
 def student_view_attendance(request):
     student = request.user.student
@@ -728,7 +751,7 @@ def student_view_attendance(request):
     for subject in subjects:
         attendance_reports = AttendanceReport.objects.filter(student=student, attendance__subject=subject)
         total_classes = attendance_reports.count()
-        present_count = attendance_reports.filter(status='Present').count()
+        present_count = attendance_reports.filter(status='True').count()
 
         attendance_data.append({
             'subject': subject.name,

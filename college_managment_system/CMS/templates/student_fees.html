@@ -6,10 +6,13 @@
     <title>My Fees</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/fees_style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/student_sidebar.css' %}"> 
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}"> 
 </head>
 <body>
-    <div class="container">
+    <div class="dashboard-container">
+
+    {% include 'student_sidebar.html' %}
+    <div class="main-content">
         <h1>My Fee Details</h1>
 
         {% if fees %}
@@ -34,6 +37,7 @@
         {% else %}
             <p class="no-fees">No fee details found for your account.</p>
         {% endif %}
+    </div>
     </div>
 </body>
 </html>

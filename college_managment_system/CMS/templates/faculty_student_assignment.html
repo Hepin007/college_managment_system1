@@ -22,6 +22,20 @@
                 </div>
                 <button type="submit" name="load_subjects">Load Subjects</button>
             </form>
+            <!-- <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="semester">Select Semester:</label>
+                    <select name="semester" id="semester" required>
+                        <option value="">-- Choose Semester --</option>
+                        {% for i in "12345678" %}
+                            <option value="{{ i }}" {% if semester|stringformat:"s" == i %}selected{% endif %}>Semester {{ i }}</option>
+                        {% endfor %}
+                    </select>
+                    <br><br>
+                    <button type="submit" name="load">Load</button>
+                </div>
+            </form> -->
 
             <!-- Assignment Form -->
             {% if assignment_form %}
