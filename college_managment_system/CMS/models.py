@@ -14,7 +14,7 @@ class CustomUser(AbstractUser):
     
 
     def __str__(self):
-        return f"{self.username} ({self.role})"
+        return f"{self.username}"
 
 # Department model
 class Department(models.Model):
