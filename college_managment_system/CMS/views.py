@@ -661,7 +661,7 @@ def assignment_submission(request):
         file = request.FILES['file']
         assignment = Assignment.objects.get(id=assignment_id)
         Submission.objects.create(assignment=assignment, student=student, file=file)
-        return redirect("assignment_submission")
+        return redirect("student_assignment")
     return render(request, "student_assignment.html", {
         "assignments": assignments,
         "submissions": submissions
