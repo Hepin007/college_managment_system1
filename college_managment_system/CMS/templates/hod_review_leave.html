@@ -31,7 +31,7 @@
         <tbody>
           {% for leave in student_leaves %}
           <tr>
-            <td>{{ leave.student_id.admin.username }}</td>
+            <td>{{ leave.student_id.admin.username }}</td> 
             <td>{{ leave.reason }}</td>
             <td>{{ leave.date }}</td>
             <td class="status-{{ leave.status|lower }}">{{ leave.status }}</td>
