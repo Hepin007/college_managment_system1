@@ -673,8 +673,9 @@ def feedback(request):
     if request.method == "POST":
         feedback_text = request.POST['feedback']
         Feedback.objects.create(student=student, feedback_text=feedback_text)
-        return redirect("feedback")
-    return render(request, "student_feedback.html") 
+        messages.success(request, "Your feedback has been submitted successfully!")
+        return redirect("student_feedback")
+    return render(request, "student_feedback.html")
 
 @login_required #done
 def student_leave(request):
