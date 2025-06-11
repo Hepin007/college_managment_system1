@@ -536,30 +536,29 @@ def student_grade(request):
 
 @login_required
 def faculty_assignment(request):
-    faculty =  request.user.faculty
+    faculty = request.user.faculty
     semester_selected = None
     subjects = None
     assignment_form = None
-    semester_form = SemesterForm(request.POST or None)
 
     if request.method == 'POST':
-        if 'load_subjects' in request.POST:
-            semester_form = SemesterForm(request.POST)
-            if semester_form.is_valid():
-                semester_selected = semester_form.cleaned_data['semester']
-                subjects = Subject.objects.filter(semester=semester_selected, faculty=faculty)
-                assignment_form = AssignmentForm()
-                assignment_form.fields['subject'].queryset = subjects
+        semester_form = SemesterForm(request.POST)
+        assignment_form = AssignmentForm(request.POST, request.FILES)
+
+        if 'load_subjects' in request.POST and semester_form.is_valid():
+            semester_selected = semester_form.cleaned_data['semester']
+            subjects = Subject.objects.filter(semester=semester_selected, faculty=faculty)
+            assignment_form = AssignmentForm()
+            assignment_form.fields['subject'].queryset = subjects
 
         elif 'submit_assignment' in request.POST:
-            semester_form = SemesterForm(request.POST)
-            assignment_form = AssignmentForm(request.POST, request.FILES)
             if semester_form.is_valid() and assignment_form.is_valid():
                 assignment = assignment_form.save(commit=False)
                 assignment.faculty = faculty
                 assignment.semester = semester_form.cleaned_data['semester']
                 assignment.save()
                 return redirect('faculty_assignment')
+
     else:
         semester_form = SemesterForm()
 
@@ -771,3 +770,9 @@ def student_view_attendance(request):
 def logout_view(request):
     logout(request)
     return redirect('home')
+
+
+def assignments(request):
+    student = request.user.student
+    assignments = Assignment.objects.filter(subject__department=student.department, semester=student.semester)
+    return render(request, "student_assignments.html", {"assignments": assignments})

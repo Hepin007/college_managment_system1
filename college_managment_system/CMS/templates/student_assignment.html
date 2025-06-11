@@ -23,9 +23,13 @@
                 <ul class="assignment-list">
                     {% for assignment in assignments %}
                     <li>
-                        <strong>{{ assignment.title }}</strong> - {{ assignment.subject.name }}<br>
-                        Due: {{ assignment.due_date|date:"M d, Y" }}<br>
-                        <a href="{{ assignment.file.url }}" target="_blank">View PDF</a>
+                            <div>
+                                <h3>{{ assignment.title }}</h3>
+                                <p>Subject: {{ assignment.subject.name }}</p>
+                                <p>Due: {{ assignment.due_date|date:"M d, Y" }}<p><br>
+                                <a href="{{ assignment.file.url }}" target="_blank">View PDF</a>
+                            </div>
+                        
                         <form method="POST" enctype="multipart/form-data" class="submission-form">
                             {% csrf_token %}
                             <input type="hidden" name="assignment" value="{{ assignment.id }}">
