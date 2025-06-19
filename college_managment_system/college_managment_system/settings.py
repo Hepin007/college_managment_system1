@@ -13,9 +13,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 
-
-CSRF_TRUSTED_ORIGINS = ['https://college_managment_system.onrender.com']
-ALLOWED_HOSTS = ['college_managment_system.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['college_managment_system.onrender.com']
+DEBUG = False
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -54,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'college_managment_system.urls'
