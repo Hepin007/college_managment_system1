@@ -1,1 +1,1 @@
-web: gunicorn college_managment_system.wsgi:application
+web: gunicorn college_managment_system.college_managment_system.wsgi:application
