@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'CMS',
+    'college_managment_system.CMS',
 ]
 
 MIDDLEWARE = [
